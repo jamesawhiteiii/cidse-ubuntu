@@ -24,7 +24,8 @@ The following process will create an EFI supported installation but will not add
 support. The USB or ISO will only be able to perform EFI installations.
 
 
-Copy the fse.seed, fse-nvme.seed, .firstboot.sh, and install directory to */USBorISO/preseed/*
+Copy the /preseed directory to */USBorISO/preseed/*
+(contains fse-sata.seed, fse-nvme.seed, fse-satanoencrypt.seed, fse-nvmenoencrypt .firstboot.sh, and install directory to */USBorISO/preseed/*
 
 
 Copy the grub.cfg to */USBorISO/boot/grub/* (you may want to backup the current copy)
