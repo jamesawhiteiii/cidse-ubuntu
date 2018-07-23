@@ -257,6 +257,10 @@ echo "*************        FSE CLIENT CONFIGURATION COMPLETE         ***********
 echo "*************           landscape.fulton.ad.asu.edu          **********************"
 echo "***********************************************************************************"
 
+wget https://github.com/jamesawhiteiii/cidse-ubuntu/blob/master/provisioning.sh /tmp/
+
+sh provisioning.sh
+
 echo "An email has been sent to your Systems Administrator, you may exit the script now"
 read -n 1 -s -r -p "Press any key to continue"
 
