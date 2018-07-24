@@ -1,91 +1,63 @@
 #######################################################################
 # Project           : Landscape
 #
-# Program name      : CIDSE_RegisterLandscape.sh
-#Author            : James White III
-#
-# Date created      : 06 27 2018
+# Program name      : configure_landscape.sh
+# Author            : James White III
+# Contributors
+# Date created      : 07 23 2018
 #
 # Purpose           : Remotely register Ubuntu client with Landscape Server
 #
+# 1. Enter hostname of remote system
+# 2. Initiate remote SSH Into HostSytem
+# 3. Authenticate as "techs"
+# 4. Get client files
+# 5. 
 #######################################################################
 
 #### Get Host Name ####
 echo 'enter hostname in "enXXXXXXXl" format'
 read HOST
 HOST='techs@'$HOST'.cidse.dhcp.asu.edu'
-
+#
 #### Connect to the System ####
 echo 'Enter Techs password When Prompted'
 ssh -t $HOST
-
+#
 ####enter commands to run in remote system in here####
 ####ONLY USE DOUBLE QUOTES IN HERE####
-
-apt-get update && apt-get -y upgrade
-##########################################################################################
-######################                   CIFS-UTILS                  #####################
-##########################################################################################
-
-apt install cifs-utils -y
-
-##########################################################################################
-######################            MOUNT SOURCE FILESHARE	         #####################
-##########################################################################################
-
-echo “Installing CIFS-UTILS”
-apt-get install cifs-utils -y
-
-echo “Making New Source Directory”
-mkdir /mnt/source/
-
-echo “Mounting CIDSE-FS-01”
-mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
-
-
+#
 ##########################################################################################
 #######################            COPY INSTALL DIRECTORY        #########################
 ##########################################################################################
-
-cp -a /mnt/source/linux/ubuntu/preseed/ubuntusata/preseed/install /tmp/
-
-##########################################################################################
-#######################            ADD PBIS Client Repo        ###########################
-##########################################################################################
-
-wget -O - http://repo.pbis.beyondtrust.com/apt/RPM-GPG-KEY-pbis|sudo apt-key add - 
-sudo wget -O /etc/apt/sources.list.d/pbiso.list http://repo.pbis.beyondtrust.com/apt/pbiso.list 
-sudo apt-get update
-echo $(date) ${filename} SUCCESS: PBIS-OPEN Repo Added >> /var/log/fse.log
-
-##########################################################################################
-##########################           Install PBIS Client        ##########################
-##########################################################################################
-
-apt-get install pbis-open -y
-echo $(date) ${filename} SUCCESS: PBIS-OPEN Installed >> /var/log/fse.log
-
-
+#
+apt-get update && apt-get -y upgrade
+#
 ##########################################################################################
 ##########################     Install Landscape Client         ##########################
 ##########################################################################################
-
+#
 apt install landscape-client -y
 echo $(date) ${filename} SUCCESS: Landscape-Client Installed >> /var/log/fse.log
-
-
-
+#
+#
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
 ######################	             PRE-CONFIGURE                       #################
-######################	     	    LANDSCAPE CLIENT       	             #################
+######################	     	     LANDSCAPE CLIENT       	             #################
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
-
+#
+##########################################################################################
+#######################            Get Client Files              #########################
+##########################################################################################
+#
+cp -a /mnt/source/linux/ubuntu/preseed/ubuntusata/preseed/install /tmp/
+#
 ##########################################################################################
 ################       Make backup of default client.conf    #############################
 ##########################################################################################
@@ -114,10 +86,7 @@ cat /tmp/install/fse/landscape/addhost.txt >> /etc/hosts
 cp /tmp/install/fse/landscape/license.txt /etc/landscape/
 
 ##### Copy Landscape SSL Cert to /etc/landscape #####
-cp /tmp/install/fse/landscape/landscape_server.pem /etc/landscape/
-
-
-
+cp /tmp/install/fse/landscape/landscape_server.pem
 ##########################################################################################
 ##########################################################################################
 ##########################  Request Client registration from Landscape  ##################
