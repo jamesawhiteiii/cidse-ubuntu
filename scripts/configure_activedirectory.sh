@@ -15,6 +15,7 @@
 # 4. Add PBIS Repositories
 # 5. Verify the hostname
 # 6. Verfiy the computer is prestaged in Active Directory
+# 7. Reboot
 #######################################################################
 #
 ##### Get Host Name ####
