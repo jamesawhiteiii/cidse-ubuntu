@@ -127,7 +127,7 @@ touch /home/techs/Desktop/PROVISIONING STARTED.txt
 
 echo "CLIENT CONFIGURATION COMPLETE"
 
-sleep 10
-reboot
+#sleep 10
+#reboot
 
 
