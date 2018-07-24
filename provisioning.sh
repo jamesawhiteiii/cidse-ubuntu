@@ -1,6 +1,6 @@
 #!/bin/bash
 #######################################################################
-# Project           : Landscape
+# Project           : FSE Ubuntu Deployment
 #
 # Program name      : provisioning.sh
 # Author            : James White III
