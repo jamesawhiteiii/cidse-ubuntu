@@ -1,10 +1,9 @@
 #!/bin/bash -i
-
-#!/bin/bash
-# Author: 		Jon Anderson
-# Name:			firstlogin.sh
-# Purpose:		FSE Ubuntu Client Configuration- First Login Script
-# Notes:		Check /var/log/fse.log if you encounter any errors
+#
+# Author:         James White & Jon Anderson
+# Name:           firstlogin.sh
+# Purpose:        FSE Ubuntu Client Configuration- First Login Script
+# Notes:          Check /var/log/fse.log if you encounter any errors
 
 
 #####################################################################
@@ -14,29 +13,23 @@
 # Get the filename for logging
 filename=$(echo $0 | rev | cut -d'/' -f1 | rev)
 
-echo " **********************************************************************************"
-echo " **********************************************************************************"
-echo " **********************************************************************************"
-echo " *************               *** ATTENTION ***               **********************"
-echo " **********************************************************************************"
-echo " **********************************************************************************"
-
-echo "Beginning FSE Ubuntu Client configuration script" ${filename}
+echo
+echo "Beginning FSE Ubuntu configuration script" ${filename}
 echo "Logs are located at /var/log/fse.log"
 
 #####################################################################
 # Checking for internet connectivity                                #
 #####################################################################
 if [[ "$(ping -c 1 8.8.8.8 | grep '100% packet loss' )" != "" ]]; then
-    echo "Failed to connect to the internet"
-    echo "Check your connection and then log out and log in to restart"
-    echo "This script will close in 20 seconds"
-    sleep 20
-    echo $(date) ${filename} ERROR: No network connectivity, unable to reach the internet, log out and back in to restart the setup process >> /var/log/fse.log
-    exit 1
+echo "Failed to connect to the internet"
+echo "Check your connection and then log out and log in to restart"
+echo "This script will close in 20 seconds"
+sleep 20
+echo $(date) ${filename} ERROR: No network connectivity, unable to reach the internet, log out and back in to restart the setup process >> /var/log/fse.log
+exit 1
 else
-    echo "Network connection present"
-    echo
+echo "Network connection present"
+echo
 fi
 
 
@@ -46,9 +39,9 @@ fi
 #####################################################################
 if [ "$(id -u)" != "0" ]
 then
-	echo "This script must be run with root privileges"
-	echo $(date) ${filename} ERROR: Unable to continue without root privileges, log out and back in to restart the setup process >> /var/log/fse.log
-	exit 1
+echo "This script must be run with root privileges"
+echo $(date) ${filename} ERROR: Unable to continue without root privileges, log out and back in to restart the setup process >> /var/log/fse.log
+exit 1
 fi
 
 #####################################################################
@@ -56,14 +49,14 @@ fi
 #####################################################################
 # DMIDECODE
 #   Used for reading asset tag and BIOS information)
-#   More information: 
+#   More information:
 #   https://www.tecmint.com/how-to-get-hardware-information-with-dmidecode-command-on-linux/
 #   Also 'man dmidecode'
 
 if [ -z "$(command -v dmidecode)" ]
 then
-	echo "dmidecode not installed, installing now"
-	apt-get install dmidecode -y
+echo "dmidecode not installed, installing now"
+apt-get install dmidecode -y
 fi
 
 #####################################################################
@@ -76,11 +69,11 @@ asset_tag=$(dmidecode | grep Asset | uniq | cut -d" " -f3 | grep "^[0-9]\{7\}" |
 # Check Asset Tag against ASU format, ask for hostname if it doesn't match
 if [[ ${asset_tag} =~ [0-9]{7}$ ]]
 then
-	new_hs=en${asset_tag}l
+new_hs=en${asset_tag}l
 else
-	echo "Asset Tag not set properly in BIOS, or does not match proper format"
-	echo "Proper format is en0001234l where 0001234 is the ASU Asset Tag #"
-	read -p "Please specify the new hostname followed by [ENTER]: " new_hs
+echo "Asset Tag not set properly in BIOS, or does not match proper format"
+echo "Proper format is en0001234l where 0001234 is the ASU Asset Tag #"
+read -p "Please specify the new hostname followed by [ENTER]: " new_hs
 fi
 
 #####################################################################
@@ -93,17 +86,17 @@ read -p "Proceed with change? [y|n]: " user_choice
 
 if [ ${user_choice} == "y" ]
 then
-	hostnamectl set-hostname ${new_hs}
-	sed -i "s/${current_hs}/$(hostname)/g" /etc/hosts
-	sed -i "s/localhost/$(hostname)/g" /etc/hosts
-	echo "Hostname updated succesfully to "$(hostname)
+hostnamectl set-hostname ${new_hs}
+sed -i "s/${current_hs}/$(hostname)/g" /etc/hosts
+sed -i "s/localhost/$(hostname)/g" /etc/hosts
+echo "Hostname updated succesfully to "$(hostname)
 else
-	echo "Hostname not updated"
-	echo "Log out and log back in restart the setup process"
-	echo "This window will close in 20 seconds"
-	echo $(date) ${filename} WARNING: No hostname was specified, causing the script to exit, log out and back in to restart the setup process  >> /var/log/fse.log
-	sleep 20
-	exit 1
+echo "Hostname not updated"
+echo "Log out and log back in restart the setup process"
+echo "This window will close in 20 seconds"
+echo $(date) ${filename} WARNING: No hostname was specified, causing the script to exit, log out and back in to restart the setup process  >> /var/log/fse.log
+sleep 20
+exit 1
 fi
 
 ##########################################################################################
@@ -235,20 +228,21 @@ ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep -q 18.04)
 # ver_chk will return as a 0 if the grep is matched
 # If no match, it will return a 1
 
-if ${ver_chk};
-then
-        
-else
-        rm /etc/gdm3/custom.conf
-        mv /etc/gdm3/custom.conf.bak /etc/gdm3/custom.conf
-fi
+#if ${ver_chk};
+#then
+#       
+#else
+#        rm /etc/gdm3/custom.conf
+#        mv /etc/gdm3/custom.conf.bak /etc/gdm3/custom.conf
+#fi
 
 ##########################################################################################
 ########################    GET CIDSE BASE CONFIGURATION       ###########################
 ##########################################################################################
 cd /tmp
-wget https://github.com/jamesawhiteiii/cidse-ubuntu/blob/master/provisioning.sh /tmp/
-sh /tmp/provisioning.sh
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/provisioning.sh
+chmod u+x /tmp/provisioning.sh
+sudo bash /tmp/provisioning.sh
 
 ##########################################################################################
 ##########################################################################################
@@ -262,13 +256,10 @@ echo "**************************************************************************
 ##################################  Write Out to Log     #################################
 ##########################################################################################
 echo $(date) ${filename} SUCCESS: FSE Client Configuration Complete >> /var/log/fse.log
-
-
-
 echo "An email has been sent to your Systems Administrator, you may exit the script now"
-read -n 1 -s -r -p "Press any key to continue"
-sleep 10
-reboot
+#read -n 1 -s -r -p "Press any key to continue"
+#sleep 10
+#reboot
 
 
 

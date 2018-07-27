@@ -1,0 +1,6 @@
+[Desktop Entry]
+Exec=sudo bash -c /tmp/firstlogin.sh; bash
+Name=fse_provisioning
+Terminal=true
+Type=Application
+X-GNOME-Autostart-enabled=true
