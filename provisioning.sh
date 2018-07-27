@@ -84,21 +84,21 @@ touch /home/techs/Desktop/PROVISIONING STARTED.txt
 ##############    Copy the Fulton background to the default location and file   ##########
 ##########################################################################################
 
-#echo “Copying CIDSE 2018 Wallpaper”
-#rm /usr/share/backgrounds/warty-final-ubuntu.png
-#cp /mnt/source/linux/ubuntu/config/cidse/workstation/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
-#chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
-#chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
+echo “Copying CIDSE 2018 Wallpaper”
+rm /usr/share/backgrounds/warty-final-ubuntu.png
+cp /mnt/source/linux/ubuntu/config/cidse/workstation/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
+chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
+chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 
 
 ##########################################################################################
 ############################   Set Login Configuration     ###############################
-# Lightdm.conf file is set to allow TECHS to auto login
-#echo “Copying Lightdm.conf”
-#rm /etc/lightdm/lightdm.conf
-#cp /mnt/source/linux/ubuntu/config/cidse/workstation/login/lightdm.conf /etc/lightdm/lightdm.conf
-#chown root:root /etc/lightdm/lightdm.conf
-#chmod a+x /etc/lightdm/lightdm.conf
+ Lightdm.conf file is set to allow TECHS to auto login
+echo “Copying Lightdm.conf”
+rm /etc/lightdm/lightdm.conf
+cp /mnt/source/linux/ubuntu/config/cidse/workstation/login/lightdm.conf /etc/lightdm/lightdm.conf
+chown root:root /etc/lightdm/lightdm.conf
+chmod a+x /etc/lightdm/lightdm.conf
 
 
 ##########################################################################################
@@ -125,7 +125,7 @@ touch /home/techs/Desktop/PROVISIONING STARTED.txt
 #mkdir /var/log/fse/cidse
 #touch /var/log/fse/cidse/workstation_config.txt
 
-echo "CLIENT CONFIGURATION COMPLETE"
+#echo "CLIENT CONFIGURATION COMPLETE"
 
 #sleep 10
 #reboot
