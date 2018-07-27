@@ -243,11 +243,12 @@ else
         mv /etc/gdm3/custom.conf.bak /etc/gdm3/custom.conf
 fi
 
-
 ##########################################################################################
-##################################  Write Out to Log     #################################
+########################    GET CIDSE BASE CONFIGURATION       ###########################
 ##########################################################################################
-echo $(date) ${filename} SUCCESS: FSE Client Configuration Complete >> /var/log/fse.log
+cd /tmp
+wget https://github.com/jamesawhiteiii/cidse-ubuntu/blob/master/provisioning.sh /tmp/
+sh /tmp/provisioning.sh
 
 ##########################################################################################
 ##########################################################################################
@@ -257,12 +258,18 @@ echo "*************        FSE CLIENT CONFIGURATION COMPLETE         ***********
 echo "*************           landscape.fulton.ad.asu.edu          **********************"
 echo "***********************************************************************************"
 
-wget https://github.com/jamesawhiteiii/cidse-ubuntu/blob/master/provisioning.sh /tmp/
+##########################################################################################
+##################################  Write Out to Log     #################################
+##########################################################################################
+echo $(date) ${filename} SUCCESS: FSE Client Configuration Complete >> /var/log/fse.log
 
-sh provisioning.sh
+
 
 echo "An email has been sent to your Systems Administrator, you may exit the script now"
 read -n 1 -s -r -p "Press any key to continue"
+sleep 10
+reboot
+
 
 
 
