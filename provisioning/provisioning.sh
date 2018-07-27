@@ -27,7 +27,7 @@ mkdir /mnt/source/
 
 echo “Mounting CIDSE-FS-01”
 mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY
-
+/
 ##########################################################################################
 
 ##########################################################################################
@@ -35,8 +35,8 @@ mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,usern
 ##########################################################################################
 
 #Avahi-Daemon Patching
-cp /install/fse/patch/avahi/avahi-daemon.conf
-echo $(date) ${filename} SUCCESS: Avahi-Daemon patching completed >> /var/log/fse.log
+#cp /install/fse/patch/avahi/avahi-daemon.conf
+#echo $(date) ${filename} SUCCESS: Avahi-Daemon patching completed >> /var/log/fse.log
 
 ##########################################################################################
 ##########################             ADD ADMINISTRATORS           ######################
@@ -150,7 +150,7 @@ chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 
 echo "CLIENT CONFIGURATION COMPLETE"
 
-#sleep 10
+sleep 10
 #reboot
 
 
