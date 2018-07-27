@@ -16,6 +16,29 @@
 touch /home/techs/Desktop/PROVISIONING STARTED.txt
 
 ##########################################################################################
+######################            MOUNT SOURCE FILESHARE	         #####################
+##########################################################################################
+
+echo “Installing CIFS-UTILS”
+apt-get install cifs-utils -y
+
+echo “Making New Source Directory”
+mkdir /mnt/source/
+
+echo “Mounting CIDSE-FS-01”
+mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY
+
+##########################################################################################
+
+##########################################################################################
+#######################              CLIENT PATCHING                ######################
+##########################################################################################
+
+#Avahi-Daemon Patching
+cp /install/fse/patch/avahi/avahi-daemon.conf
+echo $(date) ${filename} SUCCESS: Avahi-Daemon patching completed >> /var/log/fse.log
+
+##########################################################################################
 ##########################             ADD ADMINISTRATORS           ######################
 ##########################################################################################
 
@@ -84,11 +107,11 @@ touch /home/techs/Desktop/PROVISIONING STARTED.txt
 ##############    Copy the Fulton background to the default location and file   ##########
 ##########################################################################################
 
-#echo “Copying CIDSE 2018 Wallpaper”
-#rm /usr/share/backgrounds/warty-final-ubuntu.png
-#cp /mnt/source/linux/ubuntu/config/cidse/workstation/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
-#chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
-#chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
+echo “Copying CIDSE 2018 Wallpaper”
+rm /usr/share/backgrounds/warty-final-ubuntu.png
+cp /mnt/source/linux/ubuntu/config/cidse/workstation/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
+chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
+chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 
 
 ##########################################################################################
