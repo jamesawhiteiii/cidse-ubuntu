@@ -35,7 +35,7 @@ fi
 
 
 #####################################################################
-# Check for root priveleges                                         #
+# Check for root privileges                                         #
 #####################################################################
 if [ "$(id -u)" != "0" ]
 then
@@ -223,7 +223,7 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 #the first grep returns the line containing the version number
 #the second grep determins if it 18.04
 
-ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep -q 18.04)
+#ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep -q 18.04)
 
 # ver_chk will return as a 0 if the grep is matched
 # If no match, it will return a 1
@@ -237,29 +237,37 @@ ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep -q 18.04)
 #fi
 
 ##########################################################################################
-########################    GET CIDSE BASE CONFIGURATION       ###########################
-##########################################################################################
-cd /tmp
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/provisioning.sh
-chmod u+x /tmp/provisioning.sh
-sudo bash /tmp/provisioning.sh
-
-##########################################################################################
 ##########################################################################################
 ##########################################################################################
 echo "***********************************************************************************"
 echo "*************        FSE CLIENT CONFIGURATION COMPLETE         ********************"
 echo "*************           landscape.fulton.ad.asu.edu          **********************"
 echo "***********************************************************************************"
-
 ##########################################################################################
 ##################################  Write Out to Log     #################################
 ##########################################################################################
 echo $(date) ${filename} SUCCESS: FSE Client Configuration Complete >> /var/log/fse.log
-echo "An email has been sent to your Systems Administrator, you may exit the script now"
-#read -n 1 -s -r -p "Press any key to continue"
-#sleep 10
-#reboot
+
+##########################################################################################
+########################    GET CIDSE BASE CONFIGURATION       ###########################
+##########################################################################################
+echo $(date) ${filename} Beginning Department Specific Provisioning >> /var/log/fse.log
+#
+cd /tmp
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/provisioning.sh
+chmod u+x /tmp/provisioning.sh
+sudo bash /tmp/provisioning.sh --verbose
+#
+echo $(date) ${filename} SUCCESS: Department Specific Provisioning Complete >> /var/log/fse.log
+
+echo "***********************************************************************************"
+echo "*************        CIDSE CLIENT CONFIGURATION COMPLETE        *******************"***********************************************************************************"
+echo "***********************************************************************************"
+
+echo "***********************************************************************************"
+echo "****          An email has been sent to your Systems Administrator!            ****"
+echo "***********************************************************************************"
+##########################################################################################
 
 
 
