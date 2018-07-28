@@ -1,0 +1,277 @@
+#########################################################################################
+# localization settings                                                                 #
+#########################################################################################
+
+### Specifies US locale ########################################################
+################################################################################
+d-i debian-installer/locale string en_US.UTF-8
+
+### Ask to detect keyboard mapping #############################################
+################################################################################
+d-i console-setup/ask_detect boolean false
+
+### Specify the keyboard mapping ###############################################
+################################################################################
+d-i console-setup/layoutcode string us
+
+
+#########################################################################################
+# network settings                                                                      #
+#########################################################################################
+# will use DHCP, genaric hostname, and will attempt to 
+
+### Autoselect network interface  ##############################################
+################################################################################
+d-i netcfg/choose_interface                                 select      auto
+
+### DHCP timeout ###############################################################
+################################################################################
+d-i netcfg/dhcp_timeout                                     string      30
+
+### Set hostname and domain name (DHCP can override these) #####################
+################################################################################
+d-i netcfg/get_hostname                                     string      ubuntu
+d-i netcfg/get_domain                                       string      domain
+
+### Autoload non-free firmware if needed for network/other hardware ############
+################################################################################
+d-i hw-detect/load_firmware                                 boolean     true
+
+### Mirror settings ############################################################
+################################################################################
+d-i mirror/country                                          string      us
+d-i mirror/http/hostname                                    string      archive.ubuntu.com
+d-i mirror/http/directory                                   string      /ubuntu
+d-i mirror/udeb/components                                  multiselect main, restricted
+
+#########################################################################################
+# clock and timezone settings                                                           #
+#########################################################################################
+d-i time/zone                                               string      America/Phoenix
+d-i clock-setup/utc                                         boolean     false
+d-i clock-setup/ntp                                         boolean     true
+
+
+#########################################################################################
+# user account settings                                                                 #
+#########################################################################################
+
+### Setup root account #########################################################
+################################################################################
+# user account setupd-i passwd/root-login                   boolean     false
+
+### Create 'techs' account #####################################################
+################################################################################
+d-i passwd/make-user                                        boolean     true
+d-i passwd/user-fullname                                    string      CIDSE Techs
+d-i passwd/username                                         string      techs
+d-i passwd/user-password-crypted                            password    $1$m4XcmuPH$dcli2PMOOoj4De7QmKPUa0
+d-i user-setup/allow-password-weak                          boolean     false
+d-i passwd/user-default-groups                              string      adm cdrom dialout lpadmin plugdev sambashare
+d-i user-setup/encrypt-home                                 boolean     false
+d-i passwd/auto-login 					    boolean 	true
+#########################################################################################
+# configure apt                                                                         #
+#########################################################################################
+d-i apt-setup/restricted                                    boolean     true
+d-i apt-setup/universe                                      boolean     true
+d-i apt-setup/backports                                     boolean     true
+d-i apt-setup/services-select                               multiselect security
+d-i apt-setup/security_host                                 string      security.ubuntu.com
+d-i apt-setup/security_path                                 string      /ubuntu
+tasksel tasksel/first                                       multiselect ubuntu-desktop
+d-i pkgsel/upgrade                                          select      full-upgrade
+d-i pkgsel/update-policy                                    select      unattended-upgrades
+d-i pkgsel/updatedb                                         boolean     true
+
+#########################################################################################
+# disk partitioning                                                                     #
+#########################################################################################
+# part-man documentation: https://wikitech.wikimedia.org/wiki/PartMan
+# part-man documentation: https://raw.githubusercontent.com/xobs/debian-installer/master/doc/devel/partman-auto-recipe.txt
+# part-man example lvm: https://people.canonical.com/~mtrudel/preseed/crypto.cfg
+
+### Specifies the disk to work with ############################################
+################################################################################
+d-i partman-auto/disk string /dev/nvme0n1
+
+### Specifies to use lvm with encryption [vs regular or lvm] ###################
+################################################################################
+d-i partman-auto/method string crypto
+
+### Specifies the encryption password for the volume group #####################
+################################################################################
+d-i partman-crypto/passphrase password fulton!
+d-i partman-crypto/passphrase-again password fulton!
+
+### Automatically delete any old lvm and sw_raid found on disc #################
+################################################################################
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-md/device_remove_md boolean true
+
+### Answers yes to request to confirm of writing the new lvm ###################
+################################################################################
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+d-i partman-md/confirm boolean true
+
+### Answers yes to overwrite any non-EFI OS installed ##########################
+################################################################################
+d-i partman-efi/non_efi_system boolean true
+
+### Automatically partition without confirmation ###############################
+################################################################################
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+### Specifies that the whole disk be used for new scheme [vs 00GB or 00%] ######
+################################################################################
+d-i partman-auto-lvm/guided_size string max
+
+### Names the new logical volume group as 'crypt' ##############################
+################################################################################
+d-i partman-auto-lvm/new_vg_name string crypt
+
+
+### Selects the partition recipe as defined below ##############################
+################################################################################
+d-i partman-auto/choose_recipe select custom-lvm
+
+
+### Partitions to be created ###################################################
+################################################################################
+### grub2 of 1MB, /efi of 200MB [grub parition is for legacy, efi is for efi]
+### /boot of 300MB, /_ of whatever space is left, /swap of 8GB-16GB
+
+d-i partman-auto/expert_recipe string                         \
+      custom-lvm ::                                           \
+        1 1 1 free                                            \
+        $bios_boot{ }                                         \
+        method{ biosgrub }                                    \
+        .                                                     \
+        200 200 200 fat32                                     \
+        $primary{ }                                           \
+        method{ efi }                                         \
+        format{ }                                             \
+        .                                                     \
+        4096 4096 4096 ext4                                   \
+        $primary{ } $bootable{ }                              \
+        mountpoint{ /boot }                                   \
+        method{ format }                                      \
+        format{ }                                             \
+        use_filesystem{ }                                     \
+        filesystem{ ext4 }                                    \
+        .                                                     \
+        5120 20480 1000000 ext4                               \
+        $lvmok{ }                                             \
+        mountpoint{ / }                                       \
+        lv_name{ root }                                       \
+        in_vg { crypt }                                       \
+        method{ format }                                      \
+        format{ }                                             \
+        use_filesystem{ }                                     \
+        filesystem{ ext4 }                                    \
+        .                                                     \
+        8192 8241 16384 linux-swap                            \
+    	$lvmok{ }                                             \
+        lv_name{ swap }                                       \
+        in_vg { crypt }                                       \
+        method{ swap }                                        \
+        format{ }                                             \
+        .
+
+### Partition argument reference ###############################################
+################################################################################
+
+#      	1 1 1 free		Sets (min, priority, max) partition size, then type
+
+#	$primary{ }		Sets primary flag
+#	$bootable{ }		Sets bootable flag
+#	$bios_boot{ }		Sets .....
+#	$lvmok{ } 		Sets volume in lvm flag
+
+#	mountpoint{ /boot }	Specifies mountpoint as /boot
+
+#	method{ biosgrub }   	Specifies volume for grub usage
+#	method { format }	Specifies volume for normal usage
+#	method{ efi }		Specifies volume for efi usage
+#	method{ swap }		Speficies volume for swap usage
+
+#	format{ }		Execute the format		
+#	use_filesystem{ }	Specifies that a filesystem to be used
+#	filesystem{ ext4 }	Specifies the filesystem to use
+
+#	lv_name{ test }		Names the logical volume 'test'
+#	in_vg{ name }		Puts the volume in volume group 'name'
+
+#########################################################################################
+# grub bootloader                                                                       #
+#########################################################################################
+
+### Write grub with Ubuntu as only option ######################################
+################################################################################
+d-i grub-installer/only_debian                              boolean     true
+
+### Write grub to the mbr regardless of other os ###############################
+################################################################################
+d-i grub-installer/with_other_os                            boolean     true
+
+
+#########################################################################################
+# finish installation                                                                   #
+#########################################################################################
+
+################################################################################
+### Reboot, eject CD ###########################################################
+################################################################################
+d-i finish-install/reboot_in_progress                       note
+d-i finish-install/keep-consoles                            boolean     false
+d-i cdrom-detect/eject                                      boolean     false
+d-i debian-installer/exit/halt                              boolean     false
+d-i debian-installer/exit/poweroff                          boolean     false
+ubiquity ubiquity/reboot				    				boolean		true
+
+################################################################################
+### Custom user commands #######################################################
+################################################################################
+
+ubiquity ubiquity/success_command string \
+
+# Copy first boot script
+cp -a /cdrom/preseed/.firstboot.sh /target/root/.firstboot.sh; \
+
+# Set RC Local to run .firstboot at startup
+sed -i 's_exit 0_sh /root/.firstboot.sh_' /target/etc/rc.local; \
+
+# Copy FSE Client Configuration Files 
+#	Login/Lightdm
+#	Landscape 
+#	Backgrounds 
+#	Profiles (home/techs/.config)
+#	Scripts
+cp -a /cdrom/preseed/install /target/; \
+chmod +x /etc/rc.local; \
+
+################################################################################
+### Perform system updates #####################################################
+################################################################################
+
+apt-get update && apt-get -y upgrade; \
+
+################################################################################
+### Install additional packages ################################################
+################################################################################
+
+apt-get -y install openssh-server; \
+
+################################################################################
+# Cleanup ######################################################################
+################################################################################
+
+touch /target/var/log/fse.log; \
+echo $(date) fse.seed SUCCESS: Preseed completed >> /target/var/log/fse.log
+
+################################################################################                  
+################################################################################

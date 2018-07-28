@@ -1,0 +1,15 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+{"licenses": [{"license_key": "Yxt0ngtKrqOJzUHUnSJrTaDcctuPtqUpqzjwbWUcHHx1clzKlyinjx2jfGsapIuS", "expires": "2016-08-06", "role": "BasicFeatures", "seats": 1000}], "expires": "2016-08-06", "role": "BasicFeatures", "licensee": "arizona-state-university2", "seats": 1000}
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQEcBAEBAgAGBQJVw5A9AAoJEHKmZmXFyI7mb2MH/RtWjCf+S1MLkvCvhREFXf4B
+Q68yS60aXX0WDnnSz/AwNybHUTOc3V4p5+TLiRuJ9VJxYxkDS9Bb4vOX+VSkbYBu
+AceZLzMQH5aGdHn/3EuVM2FDyX02lp3n0XnNXWR7KvLvC6rkYjwsutyAL9ooRV7+
+5oo4NDJWr1MLj+LX/iV4TZc55QkfLruXq/TPis/s5SAndDcg0c3PIUiHDkkwFgPX
++REwflAJjyStagV/onK+nQJIy/wgj10N3zqyx3NyVKCRZjlkcLgmeWEjD4nj8qf4
+qHpw+sp/J8f0Pq4BQ7WtINsJcOzHIhjZLAMgcn8RJG8YvOMry/8Uui4nyMdlnQw=
+=qW/x
+-----END PGP SIGNATURE-----
