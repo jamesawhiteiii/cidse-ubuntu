@@ -22,8 +22,8 @@
 ##########################################################################################
 
 #Avahi-Daemon Patching
-cp /install/fse/patch/avahi/avahi-daemon.conf /etc/avahi/
-echo $(date) ${filename} SUCCESS: Avahi-Daemon patching completed >> /var/log/fse.log
+#cp /install/fse/patch/avahi/avahi-daemon.conf /etc/avahi/
+#echo $(date) ${filename} SUCCESS: Avahi-Daemon patching completed >> /var/log/fse.log
 
 ##########################################################################################
 ######################            MOUNT SOURCE FILESHARE	         #####################
