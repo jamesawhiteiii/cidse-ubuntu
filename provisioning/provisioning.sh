@@ -87,10 +87,12 @@ echo " *************************************************************************
 echo " "
 read -p "Please enter the owners ASURITE ID, followed by [ENTER]: " fse_owner
 echo  "${fse_owner}" >> /etc/fse.owner
+
 #Send to log file
 echo $(date) ${filename} SUCCESS: ${fse_owner} owns this system >>/var/log/fse.log
+
 ##########################################################################################
-##########################################################################################
+############################               CONFIGURE          ############################
 ############################            ACTIVE DIRECTORY          ########################
 ##########################################################################################
 ##########################################################################################
@@ -218,10 +220,6 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 #fi
 
 ##########################################################################################
-#######################              CLIENT UPDATES                 ######################
-##########################################################################################
-apt-get update
-##########################################################################################
 #######################              CLIENT PATCHING                ######################
 ##########################################################################################
 
@@ -233,15 +231,15 @@ apt-get update
 ######################            MOUNT SOURCE FILESHARE	         #####################
 ##########################################################################################
 
-echo “Installing CIFS-UTILS”
-apt-get install cifs-utils -y
+#echo “Installing CIFS-UTILS”
+#apt-get install cifs-utils -y
 
-echo “Making New Source Directory”
-mkdir /mnt/source/
+#echo “Making New Source Directory”
+#mkdir /mnt/source/
 
-echo “Mounting CIDSE-FS-01”
-mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
-/
+#echo “Mounting CIDSE-FS-01”
+#mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
+#/
 ##########################################################################################
 
 ##########################################################################################
@@ -297,27 +295,27 @@ mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,usern
 ##########################################################################################
 ###########################    COPY TECHS PROFILE TEMPLATE   #############################
 ##########################################################################################
-rm -r /home/techs/
-cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/techs/ /home/
-chown -R techs /home/techs/
+#rm -r /home/techs/
+#cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/techs/ /home/
+#chown -R techs /home/techs/
 
 
 ##########################################################################################
 ############################   COPY DEFAULT USER PROFILE  ################################
 ##########################################################################################
 
-cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/default/. /etc/skel; \
+#cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/default/. /etc/skel; \
 
 
 ##########################################################################################
 ##############    Copy the Fulton background to the default location and file   ##########
 ##########################################################################################
 
-echo “Copying CIDSE 2018 Wallpaper”
-rm /usr/share/backgrounds/warty-final-ubuntu.png
-cp /mnt/source/linux/ubuntu/config/cidse/workstation/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
-chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
-chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
+#echo “Copying CIDSE 2018 Wallpaper”
+#rm /usr/share/backgrounds/warty-final-ubuntu.png
+#cp /mnt/source/linux/ubuntu/config/cidse/workstation/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
+#chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
+#chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 
 
 ##########################################################################################
