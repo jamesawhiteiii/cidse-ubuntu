@@ -15,7 +15,7 @@
 
 echo " ********************************************************************************"
 echo " ********************************************************************************"
-echo " ************                  FSE CLIENT SETUP                ******************"
+echo " ************              FSE UBUNTU CLIENT SETUP             ******************"
 echo " ********************************************************************************"
 ##########################################################################################
 #################################     SET HOSTNAME      ##################################
@@ -31,6 +31,7 @@ hostn=$(cat /etc/hostname)
 
 echo " ******************************************************************************"
 echo " ******************************************************************************"
+echo " "
 echo " Please enter the desired hostname for this system: "
 read newhost
 echo " ******************************************************************************"
@@ -44,8 +45,7 @@ echo " *************************************************************************
 echo "Your new hostname is $newhost"
 echo " **********************************************************************************"
 echo " **********************************************************************************"
-
-hostname $newhost
+#hostname $newhost
 
 ##########################################################################################
 ############################        SET ASU OWNER (ASURITE ID)    ########################
@@ -94,9 +94,9 @@ echo " *************************************************************************
 echo " ********************************************************************************"
 echo " ************              Active Directory Pre-Stage          ******************"
 echo " ********************************************************************************"
-echo " *"
-echo " *"
-read -p " *  Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?" choice
+echo " #"
+echo " #"
+read -p "Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?" choice
 case "$choice" in 
   y|Y ) echo "yes";;
   n|N ) echo "****************************************************************************"
@@ -298,26 +298,11 @@ chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 ############################   Set Login Configuration     ###############################
 # Lightdm.conf file is set to allow TECHS to auto login
 #echo “Copying Lightdm.conf”
+cd /etc/lightdm/
 #rm /etc/lightdm/lightdm.conf
-#cp /mnt/source/linux/ubuntu/config/cidse/workstation/login/lightdm.conf /etc/lightdm/lightdm.conf
-#chown root:root /etc/lightdm/lightdm.conf
-#chmod a+x /etc/lightdm/lightdm.conf
-
-
-##########################################################################################
-############################         Copy Next Startup Script         ######################
-##########################################################################################
-
-#mkdir /cidseit/
-#mkdir /cidseit/login/
-#mkdir /cidseit/login/scripts/
-#mkdir /cidseit/login/scripts/startup/
-#chown -R techs /cidseit/
-
-#Places permanent rc.local file in /etc/
-#cp /mnt/source/linux/ubuntu/config/cidse/workstation/login/scripts/startup/rc.local /etc/rc.local
-#chmod +x /etc/rc.local
-
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
+chown root:root /etc/lightdm/lightdm.conf
+chmod a+x /etc/lightdm/lightdm.conf
 
 #################################################################################################
 #################################################################################################
