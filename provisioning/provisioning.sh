@@ -13,49 +13,35 @@
 ##########################################################################################
 ##########################################################################################
 
-#####################################################################
-# Obtain Asset Tag | Hostname                                       #
-#####################################################################
-
-# Attempt to retrieve asset tag from BIOS via dmidecode
-asset_tag=$(dmidecode | grep Asset | uniq | cut -d" " -f3 | grep "^[0-9]\{7\}" | awk 'length($1) == 7' | uniq)
-
-# Check Asset Tag against ASU format, ask for hostname if it doesn't match
-if [[ ${asset_tag} =~ [0-9]{7}$ ]]
-then
-new_hs=en${asset_tag}l
-else
-echo "Asset Tag not set properly in BIOS, or does not match proper format"
-echo "Proper format is en0001234l where 0001234 is the ASU Asset Tag #"
-read -p "Please specify the new hostname followed by [ENTER]: " new_hs
-fi
-
-#####################################################################
-# Set Hostname                                                      #
-#####################################################################
-current_hs=$(hostname)
-echo "Current hostname is: " ${current_hs}
-echo "Hostname to be set as:" ${new_hs}
-read -p "Proceed with change? [y|n]: " user_choice
-
-if [ ${user_choice} == "y" ]
-then
-hostnamectl set-hostname ${new_hs}
-sed -i "s/${current_hs}/$(hostname)/g" /etc/hosts
-sed -i "s/localhost/$(hostname)/g" /etc/hosts
-echo "Hostname updated succesfully to "$(hostname)
-else
-echo "Hostname not updated"
-echo "Log out and log back in restart the setup process"
-echo "This window will close in 20 seconds"
-echo $(date) ${filename} WARNING: No hostname was specified, causing the script to exit, log out and back in to restart the setup process  >> /var/log/fse.log
-sleep 20
-exit 1
-fi
-
 ##########################################################################################
-echo $(date) ${filename} SUCCESS:Hostname updated to $(hostname) >> /var/log/fse.log
+#################################     SET HOSTNAME      ##################################
+##########################################################################################
 
+#Assign existing hostname to $hostn
+hostn=$(cat /etc/hostname)
+
+#Display existing hostname
+#echo "The current hostname of this systems is $hostn"
+
+#Ask for new hostname $newhost
+
+echo " ******************************************************************************"
+echo " ******************************************************************************"
+echo " Please enter the desired hostname for this system: "
+read newhost
+echo " ******************************************************************************"
+echo " ******************************************************************************"
+#change hostname in /etc/hosts & /etc/hostname
+sed -i "s/$hostn/$newhost/g" /etc/hosts
+sed -i "s/$hostn/$newhost/g" /etc/hostname
+echo " **********************************************************************************"
+echo " **********************************************************************************"
+#display new hostname
+echo "Your new hostname is $newhost"
+echo " **********************************************************************************"
+echo " **********************************************************************************"
+
+hostname $newhost
 
 ##########################################################################################
 ############################        SET ASU OWNER (ASURITE ID)    ########################
