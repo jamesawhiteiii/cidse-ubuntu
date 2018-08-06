@@ -13,66 +13,36 @@
 ##########################################################################################
 ##########################################################################################
 
-
-#####################################################################
-# Dependencies Check                                                #
-#####################################################################
-# DMIDECODE
-#   Used for reading asset tag and BIOS information)
-#   More information: 
-#   https://www.tecmint.com/how-to-get-hardware-information-with-dmidecode-command-on-linux/
-#   Also 'man dmidecode'
-
-if [ -z "$(command -v dmidecode)" ]
-then
-	echo "dmidecode not installed, installing now"
-	apt-get install dmidecode -y
-fi
-
-#####################################################################
-# Obtain Asset Tag | Hostname                                       #
-#####################################################################
-
-# Attempt to retrieve asset tag from BIOS via dmidecode
-asset_tag=$(dmidecode | grep Asset | uniq | cut -d" " -f3 | grep "^[0-9]\{7\}" | awk 'length($1) == 7' | uniq)
-
-# Check Asset Tag against ASU format, ask for hostname if it doesn't match
-if [[ ${asset_tag} =~ [0-9]{7}$ ]]
-then
-	new_hs=en${asset_tag}l
-else
-	echo "Asset Tag not set properly in BIOS, or does not match proper format"
-	echo "Proper format is en0001234l where 0001234 is the ASU Asset Tag #"
-	read -p "Please specify the new hostname followed by [ENTER]: " new_hs
-fi
-
-#####################################################################
-# Set Hostname                                                      #
-#####################################################################
-current_hs=$(hostname)
-echo "Current hostname is: " ${current_hs}
-echo "Hostname to be set as:" ${new_hs}
-read -p "Proceed with change? [y|n]:" user_choice
-
-if [ ${user_choice} == "y" ]
-then
-	hostnamectl set-hostname ${new_hs}
-	sed -i "s/${current_hs}/$(hostname)/g" /etc/hosts
-	sed -i "s/localhost/$(hostname)/g" /etc/hosts
-	echo "Hostname updated succesfully to "$(hostname)
-else
-	echo "Hostname not updated"
-	echo "Log out and log back in restart the setup process"
-	echo "This window will close in 20 seconds"
-	echo $(date) ${filename} WARNING: No hostname was specified, causing the script to exit, log out and back in to restart the setup process  >> /var/log/fse.log
-	sleep 20
-	exit 1
-fi
-
 ##########################################################################################
-#Send to log file
-echo $(date) ${filename} SUCCESS:Hostname updated to $(hostname) >> /var/log/fse.log
+#################################     SET HOSTNAME      ##################################
+##########################################################################################
+echo " **********************************************************************************"
+echo " *************               HOST CONFIGURATION                ********************"
+echo " **********************************************************************************"
+#### Assign existing hostname to $hostn
+hostn=$(cat /etc/hostname)
+#### Display existing hostname
+#echo "The current hostname of this systems is $hostn"
+#### Ask for new hostname $newhost
+echo " ******************************************************************************"
+echo " ******************************************************************************"
+echo " Please specify the new hostname followed by [ENTER]:: "
+echo "             (Proper format is en0001234l where 0001234 is the ASU Asset Tag #)"
+read -p " " new_hs
+read newhost
+echo " ******************************************************************************"
+echo " ******************************************************************************"
+#change hostname in /etc/hosts & /etc/hostname
+sed -i "s/$hostn/$newhost/g" /etc/hosts
+sed -i "s/$hostn/$newhost/g" /etc/hostname
+echo " **********************************************************************************"
+echo " **********************************************************************************"
+#display new hostname
+echo "Your new hostname is $newhost"
+echo " **********************************************************************************"
+echo " **********************************************************************************"
 
+hostname $newhost
 ##########################################################################################
 ############################        SET ASU OWNER (ASURITE ID)    ########################
 ##########################################################################################
@@ -81,7 +51,7 @@ echo " *************************************************************************
 echo " "
 echo "                        Who is the owner of this system ?"
 echo " "
-echo "   *** Note: The system "owner" is the Faculty member who purchased the device ***"
+echo "   *** (Note: The system "owner" is the Faculty member who purchased the device )***"
 echo " "
 echo " **********************************************************************************"
 echo " **********************************************************************************"
@@ -93,15 +63,14 @@ echo  "${fse_owner}" >> /etc/fse.owner
 echo $(date) ${filename} SUCCESS: ${fse_owner} owns this system >>/var/log/fse.log
 
 ##########################################################################################
-############################               CONFIGURE          ############################
-############################            ACTIVE DIRECTORY          ########################
+####################                   CONFIGURE                  ########################
+####################                 ACTIVE DIRECTORY             ########################
 ##########################################################################################
 ##########################################################################################
 
 ##########################################################################################
-############################	      CONFIGURE PBIS OPEN         ########################
+####################     	   CONFIGURE PBIS OPEN            ########################
 ##########################################################################################
-
 echo " **********************************************************************************"
 echo " **********************************************************************************"
 echo " **********************************************************************************"
@@ -122,7 +91,7 @@ echo " *************************************************************************
 echo " **********************************************************************************"
 echo " **********************************************************************************"
 echo " "
-read -p " *  Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?  " choice
+read -p " *** Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?  " choice
 case "$choice" in 
   y|Y ) echo "yes";;
   n|N ) echo "****************************************************************************"
@@ -312,11 +281,12 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 ##############    Copy the Fulton background to the default location and file   ##########
 ##########################################################################################
 
-#echo “Copying CIDSE 2018 Wallpaper”
-#rm /usr/share/backgrounds/warty-final-ubuntu.png
-#cp /mnt/source/linux/ubuntu/config/cidse/workstation/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
-#chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
-#chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
+echo “Setting CIDSE 2018 Wallpaper”
+cd /usr/share/backgrounds 
+rm /usr/share/backgrounds/warty-final-ubuntu.png
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/blob/master/provisioning/background/warty-final-ubuntu.png
+chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
+chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 
 
 ##########################################################################################
