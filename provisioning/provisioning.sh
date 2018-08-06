@@ -115,8 +115,8 @@ echo " *************************************************************************
 echo " *************            JOINING TO ACTIVE DIRECTORY          ******************"
 echo " ********************************************************************************"
 echo " "
-echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to fulton.ad.asu.edu "
-echo "DOMAIN= FULTON"
+echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to Active Directory"
+#echo "DOMAIN= FULTON"
 domainjoin-cli join fulton.ad.asu.edu 
 #
 #Send to log file
