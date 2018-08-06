@@ -14,35 +14,27 @@
 ##########################################################################################
 
 ##########################################################################################
-#################################     SET HOSTNAME      ##################################
+############################           SET HOSTNAME               ########################
 ##########################################################################################
-echo " *******************************************************************************"
-echo " HOST CONFIGURATION                                         ********************"
-echo " *******************************************************************************"
-#### Assign existing hostname to $hostn
-hostn=$(cat /etc/hostname)
-#### Display existing hostname
-#echo "The current hostname of this systems is $hostn"
-#### Ask for new hostname $newhost
-echo " *******************************************************************************"
-echo "
-echo " Please specify the new hostname followed by [ENTER]:: "
-echo "             (Proper format is en0001234l where 0001234 is the ASU Asset Tag #)"
-echo "
-read -p " " new_hs
-read newhost
-echo "
-echo " *******************************************************************************"
-echo " *******************************************************************************"
-#change hostname in /etc/hosts & /etc/hostname
-sed -i "s/$hostn/$newhost/g" /etc/hosts
-sed -i "s/$hostn/$newhost/g" /etc/hostname
-echo " **********************************************************************************"
-echo " **********************************************************************************"
-#display new hostname
-echo "Your new hostname is $newhost"
-echo " **********************************************************************************"
-echo " **********************************************************************************"
+current_hs=$(hostname)
+echo "Current hostname is: " ${current_hs}
+echo "Hostname to be set as:" ${new_hs}
+read -p "Proceed with change? [y|n]:" user_choice
+
+if [ ${user_choice} == "y" ]
+then
+	hostnamectl set-hostname ${new_hs}
+	sed -i "s/${current_hs}/$(hostname)/g" /etc/hosts
+	sed -i "s/localhost/$(hostname)/g" /etc/hosts
+	echo "Hostname updated succesfully to "$(hostname)
+else
+	echo "Hostname not updated"
+	echo "Log out and log back in restart the setup process"
+	echo "This window will close in 20 seconds"
+	echo $(date) ${filename} WARNING: No hostname was specified, causing the script to exit, log out and back in to restart the setup process  >> /var/log/fse.log
+	sleep 20
+	exit 1
+fi
 
 hostname $newhost
 ##########################################################################################
