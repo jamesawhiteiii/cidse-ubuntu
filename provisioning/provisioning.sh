@@ -92,7 +92,7 @@ echo " ************              Active Directory Pre-Stage          ***********
 echo " ********************************************************************************"
 echo " *"
 echo " *"
-read -p " *  Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?  " choice
+read -p " *  Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?" choice
 case "$choice" in 
   y|Y ) echo "yes";;
   n|N ) echo "****************************************************************************"
@@ -115,8 +115,8 @@ echo " *************************************************************************
 echo " *************            JOINING TO ACTIVE DIRECTORY          ******************"
 echo " ********************************************************************************"
 echo " "
-echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to fulton.ad.asu.edu"
-echo "FULTON\"
+echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to fulton.ad.asu.edu "
+echo "DOMAIN= FULTON"
 domainjoin-cli join fulton.ad.asu.edu 
 #
 #Send to log file
