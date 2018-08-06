@@ -283,7 +283,7 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 echo “Setting CIDSE 2018 Wallpaper”
 cd /usr/share/backgrounds 
 rm /usr/share/backgrounds/warty-final-ubuntu.png
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/blob/master/provisioning/background/warty-final-ubuntu.png
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/warty-final-ubuntu.png
 chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
 chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 
