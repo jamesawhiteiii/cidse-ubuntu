@@ -130,15 +130,16 @@ echo " *************            JOINING TO ACTIVE DIRECTORY          ***********
 echo " ********************************************************************************"
 echo " "
 echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to fulton.ad.asu.edu"
-echo "FULTON\
+echo "FULTON\"
 domainjoin-cli join fulton.ad.asu.edu 
+#
 #Send to log file
 echo $(date) ${filename} SUCCESS: $(hostname)successfully joined to fulton.ad.asu.edu >> /var/log/fse.log
 
 ##########################################################################################
 #############################       Configure Login PBIS-OPEN          ###################
 ##########################################################################################
-
+#
 /opt/pbis/bin/config UserDomainPrefix ASUAD
 /opt/pbis/bin/config AssumeDefaultDomain true 
 /opt/pbis/bin/config LoginShellTemplate /bin/bash 
@@ -157,7 +158,6 @@ echo "**************************************************************************
 echo "*************           REGISTERING WITH LANDSCAPE           **********************"
 echo "*************           landscape.fulton.ad.asu.edu          **********************"
 echo "***********************************************************************************"
-
 
 ##########################################################################################
 ##########################################################################################
