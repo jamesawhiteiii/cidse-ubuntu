@@ -2,14 +2,14 @@
 
 ####Mount cidse-fs-01 ####
 
-#echo “Installing CIFS-UTILS”
-#apt-get install cifs-utils -y
+echo “Installing CIFS-UTILS”
+apt-get install cifs-utils -y
 
-#echo “Making New Source Directory”
-#mkdir /mnt/source/
+echo “Making New Source Directory”
+mkdir /mnt/source/
 
-#echo “Mounting CIDSE-FS-01”
-#mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
+echo “Mounting CIDSE-FS-01”
+mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
 
 ################################################################################
 ################################################################################
