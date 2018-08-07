@@ -13,96 +13,67 @@
 ##########################################################################################
 ##########################################################################################
 
-
-#####################################################################
-# Dependencies Check                                                #
-#####################################################################
-# DMIDECODE
-#   Used for reading asset tag and BIOS information)
-#   More information: 
-#   https://www.tecmint.com/how-to-get-hardware-information-with-dmidecode-command-on-linux/
-#   Also 'man dmidecode'
-
-if [ -z "$(command -v dmidecode)" ]
-then
-	echo "dmidecode not installed, installing now"
-	apt-get install dmidecode -y
-fi
-
-#####################################################################
-# Obtain Asset Tag | Hostname                                       #
-#####################################################################
-
-# Attempt to retrieve asset tag from BIOS via dmidecode
-asset_tag=$(dmidecode | grep Asset | uniq | cut -d" " -f3 | grep "^[0-9]\{7\}" | awk 'length($1) == 7' | uniq)
-
-# Check Asset Tag against ASU format, ask for hostname if it doesn't match
-if [[ ${asset_tag} =~ [0-9]{7}$ ]]
-then
-	new_hs=en${asset_tag}l
-else
-	echo "Asset Tag not set properly in BIOS, or does not match proper format"
-	echo "Proper format is en0001234l where 0001234 is the ASU Asset Tag #"
-	read -p "Please specify the new hostname followed by [ENTER]: " new_hs
-fi
-
-#####################################################################
-# Set Hostname                                                      #
-#####################################################################
-current_hs=$(hostname)
-echo "Current hostname is: " ${current_hs}
-echo "Hostname to be set as:" ${new_hs}
-read -p "Proceed with change? [y|n]:" user_choice
-
-if [ ${user_choice} == "y" ]
-then
-	hostnamectl set-hostname ${new_hs}
-	sed -i "s/${current_hs}/$(hostname)/g" /etc/hosts
-	sed -i "s/localhost/$(hostname)/g" /etc/hosts
-	echo "Hostname updated succesfully to "$(hostname)
-else
-	echo "Hostname not updated"
-	echo "Log out and log back in restart the setup process"
-	echo "This window will close in 20 seconds"
-	echo $(date) ${filename} WARNING: No hostname was specified, causing the script to exit, log out and back in to restart the setup process  >> /var/log/fse.log
-	sleep 20
-	exit 1
-fi
-
+echo " ********************************************************************************"
+echo " ********************************************************************************"
+echo " ************              FSE UBUNTU CLIENT SETUP             ******************"
+echo " ********************************************************************************"
 ##########################################################################################
-#Send to log file
-echo $(date) ${filename} SUCCESS:Hostname updated to $(hostname) >> /var/log/fse.log
+#################################     SET HOSTNAME      ##################################
+##########################################################################################
+
+#Assign existing hostname to $hostn
+hostn=$(cat /etc/hostname)
+
+#Display existing hostname
+#echo "The current hostname of this systems is $hostn"
+
+#Ask for new hostname $newhost
+
+echo " ******************************************************************************"
+echo " ******************************************************************************"
+echo " "
+echo " Please enter the desired hostname for this system: "
+read newhost
+echo " ******************************************************************************"
+echo " ******************************************************************************"
+#change hostname in /etc/hosts & /etc/hostname
+sed -i "s/$hostn/$newhost/g" /etc/hosts
+sed -i "s/$hostn/$newhost/g" /etc/hostname
+echo " **********************************************************************************"
+echo " **********************************************************************************"
+#display new hostname
+echo "Your new hostname is $newhost"
+echo " **********************************************************************************"
+echo " **********************************************************************************"
+#hostname $newhost
 
 ##########################################################################################
 ############################        SET ASU OWNER (ASURITE ID)    ########################
 ##########################################################################################
-echo " **********************************************************************************"
-echo " **********************************************************************************"
+echo " *******************************************************************************"
+echo " *******************************************************************************"
 echo " "
 echo "                        Who is the owner of this system ?"
 echo " "
-echo "   *** Note: The system "owner" is the Faculty member who purchased the device ***"
-echo " "
-echo " **********************************************************************************"
-echo " **********************************************************************************"
+echo "   (Note: The system "owner" is the Faculty member who purchased the device )"
+echo " *******************************************************************************"
+echo " *******************************************************************************"
 echo " "
 read -p "Please enter the owners ASURITE ID, followed by [ENTER]: " fse_owner
 echo  "${fse_owner}" >> /etc/fse.owner
-
 #Send to log file
 echo $(date) ${filename} SUCCESS: ${fse_owner} owns this system >>/var/log/fse.log
 
 ##########################################################################################
-############################               CONFIGURE          ############################
-############################            ACTIVE DIRECTORY          ########################
+####################                   CONFIGURE                  ########################
+####################                 ACTIVE DIRECTORY             ########################
 ##########################################################################################
 ##########################################################################################
 
 ##########################################################################################
-############################	      CONFIGURE PBIS OPEN         ########################
+####################     	   CONFIGURE PBIS OPEN            ########################
 ##########################################################################################
 
-echo " **********************************************************************************"
 echo " **********************************************************************************"
 echo " **********************************************************************************"
 echo " *************                 **WARNING**                   **********************"
@@ -111,18 +82,21 @@ echo " *************************************************************************
 echo " *************      ALL NEW SYSTEMS MUST BE PRE-STAGED       **********************"
 echo " *************         WITHIN ACTIVE DIRECTORY               **********************"
 echo " **********************************************************************************"
-echo " **********************************************************************************"
 echo " *************         PLEASE VERIFY THAT THE DEVICE         **********************"
-echo " *************     IS IN THE PROPER OU BEFORE PROCEEDING     **********************"
+echo " *************    IS IN THE PROPER OU BEFORE PROCEEDING      **********************"
 echo " **********************************************************************************"
+
 ##########################################################################################
 ##############################    Verify AD PreStage    ##################################
 ##########################################################################################
-#Requires the technician to verify whether or not the computer has been prestaged in AD.  #
-echo " **********************************************************************************"
-echo " **********************************************************************************"
-echo " "
-read -p " *  Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?  " choice
+#Require the technician to verify whether or not the computer has been prestaged in AD. 
+echo " ********************************************************************************"
+echo " ********************************************************************************"
+echo " ************              Active Directory Pre-Stage          ******************"
+echo " ********************************************************************************"
+echo " #"
+echo " #"
+read -p "Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?" choice
 case "$choice" in 
   y|Y ) echo "yes";;
   n|N ) echo "****************************************************************************"
@@ -135,26 +109,27 @@ case "$choice" in
 esac
 echo " **********************************************************************************"
 echo " **********************************************************************************"
-##Send to log file
-echo $(date) ${filename} SUCCESS: $(hostname) prestaged in active directory >> /var/log/fse.log
+
 
 ##########################################################################################
 #############################        Join FULTON.AD.ASU.EDU.           ###################
 ##########################################################################################
-echo " **********************************************************************************"
-echo " **********************************************************************************"
-echo " *************               JOIN TO ACTIVE DIRECTORY          ********************"
-echo " **********************************************************************************"
+echo " ********************************************************************************"
+echo " ********************************************************************************"
+echo " *************            JOINING TO ACTIVE DIRECTORY          ******************"
+echo " ********************************************************************************"
 echo " "
-echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to fulton.ad.asu.edu"
+echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to Active Directory"
+#echo "DOMAIN= FULTON"
 domainjoin-cli join fulton.ad.asu.edu 
+#
 #Send to log file
 echo $(date) ${filename} SUCCESS: $(hostname)successfully joined to fulton.ad.asu.edu >> /var/log/fse.log
 
 ##########################################################################################
 #############################       Configure Login PBIS-OPEN          ###################
 ##########################################################################################
-
+#
 /opt/pbis/bin/config UserDomainPrefix ASUAD
 /opt/pbis/bin/config AssumeDefaultDomain true 
 /opt/pbis/bin/config LoginShellTemplate /bin/bash 
@@ -173,7 +148,6 @@ echo "**************************************************************************
 echo "*************           REGISTERING WITH LANDSCAPE           **********************"
 echo "*************           landscape.fulton.ad.asu.edu          **********************"
 echo "***********************************************************************************"
-
 
 ##########################################################################################
 ##########################################################################################
@@ -312,37 +286,23 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 ##############    Copy the Fulton background to the default location and file   ##########
 ##########################################################################################
 
-#echo “Copying CIDSE 2018 Wallpaper”
-#rm /usr/share/backgrounds/warty-final-ubuntu.png
-#cp /mnt/source/linux/ubuntu/config/cidse/workstation/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
-#chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
-#chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
+echo “Setting CIDSE 2018 Wallpaper”
+cd /usr/share/backgrounds 
+rm /usr/share/backgrounds/warty-final-ubuntu.png
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/warty-final-ubuntu.png
+chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
+chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 
 
 ##########################################################################################
 ############################   Set Login Configuration     ###############################
 # Lightdm.conf file is set to allow TECHS to auto login
 #echo “Copying Lightdm.conf”
+cd /etc/lightdm/
 #rm /etc/lightdm/lightdm.conf
-#cp /mnt/source/linux/ubuntu/config/cidse/workstation/login/lightdm.conf /etc/lightdm/lightdm.conf
-#chown root:root /etc/lightdm/lightdm.conf
-#chmod a+x /etc/lightdm/lightdm.conf
-
-
-##########################################################################################
-############################         Copy Next Startup Script         ######################
-##########################################################################################
-
-#mkdir /cidseit/
-#mkdir /cidseit/login/
-#mkdir /cidseit/login/scripts/
-#mkdir /cidseit/login/scripts/startup/
-#chown -R techs /cidseit/
-
-#Places permanent rc.local file in /etc/
-#cp /mnt/source/linux/ubuntu/config/cidse/workstation/login/scripts/startup/rc.local /etc/rc.local
-#chmod +x /etc/rc.local
-
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
+chown root:root /etc/lightdm/lightdm.conf
+chmod a+x /etc/lightdm/lightdm.conf
 
 #################################################################################################
 #################################################################################################
