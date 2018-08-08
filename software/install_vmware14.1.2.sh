@@ -16,9 +16,9 @@ mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,usern
 #####################     INSTALL VMWARE WORKSTATION     #######################
 ################################################################################
 
-#sh /mnt/source/Apps/VMware/Workstation/Linux/14/VMware-Workstation-Full-14.1.2-8497320.x86_64.bundle --console --required --eulas-agreed --set-setting vmware-workstation serialNumber N148H-J124N-581DE-03AH2-1DZ4J
-#apt-get update
-#apt-get install open-vm-tools-desktop -y
+sh /mnt/source/Apps/VMware/Workstation/Linux/14/VMware-Workstation-Full-14.1.2-8497320.x86_64.bundle --console --required --eulas-agreed --set-setting vmware-workstation serialNumber N148H-J124N-581DE-03AH2-1DZ4J
+apt-get update
+apt-get install open-vm-tools-desktop -y
 
 ################################################################################
 #######################   Matlab Installer confirmation   ######################
