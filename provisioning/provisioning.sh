@@ -127,15 +127,8 @@ domainjoin-cli join fulton.ad.asu.edu
 echo $(date) ${filename} SUCCESS: $(hostname)successfully joined to fulton.ad.asu.edu >> /var/log/fse.log
 
 ##########################################################################################
-#############################       Configure Sudoers File             ###################
-##########################################################################################
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/scripts/configure_sudoers.sh
-
-
-##########################################################################################
 #############################       Configure Login PBIS-OPEN          ###################
 ##########################################################################################
-#
 /opt/pbis/bin/config UserDomainPrefix ASUAD
 /opt/pbis/bin/config AssumeDefaultDomain true 
 /opt/pbis/bin/config LoginShellTemplate /bin/bash 
@@ -146,6 +139,14 @@ wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/script
 echo $(date) ${filename} SUCCESS: PBIS-Open Client Configuration >> /var/log/fse.log
 
 ##########################################################################################
+##########################################################################################
+#############################       Configure Sudoers File             ###################
+##########################################################################################
+cd /tmp
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/scripts/configure_sudoers.sh
+sh /tmp/configure_sudoers.sh
+cd /
+
 
 ##########################################################################################
 ##########################################################################################
