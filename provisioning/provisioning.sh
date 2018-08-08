@@ -199,22 +199,22 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 ##########################################################################################
 
 #Avahi-Daemon Patching
-#cp /install/fse/patch/avahi/avahi-daemon.conf /etc/avahi/
-#echo $(date) ${filename} SUCCESS: Avahi-Daemon patching completed >> /var/log/fse.log
+cp /install/fse/patch/avahi/avahi-daemon.conf /etc/avahi/
+echo $(date) ${filename} SUCCESS: Avahi-Daemon patching completed >> /var/log/fse.log
 
 ##########################################################################################
 ######################            MOUNT SOURCE FILESHARE	         #####################
 ##########################################################################################
 
-#echo “Installing CIFS-UTILS”
-#apt-get install cifs-utils -y
+echo “Installing CIFS-UTILS”
+apt-get install cifs-utils -y
 
-#echo “Making New Source Directory”
-#mkdir /mnt/source/
+echo “Making New Source Directory”
+mkdir /mnt/source/
 
-#echo “Mounting CIDSE-FS-01”
-#mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
-#/
+echo “Mounting CIDSE-FS-01”
+mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
+/
 ##########################################################################################
 
 ##########################################################################################
@@ -270,16 +270,16 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 ##########################################################################################
 ###########################    COPY TECHS PROFILE TEMPLATE   #############################
 ##########################################################################################
-#rm -r /home/techs/
-#cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/techs/ /home/
-#chown -R techs /home/techs/
+rm -r /home/techs/
+cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/techs/ /home/
+chown -R techs /home/techs/
 
 
 ##########################################################################################
 ############################   COPY DEFAULT USER PROFILE  ################################
 ##########################################################################################
 
-#cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/default/. /etc/skel; \
+cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/default/. /etc/skel; \
 
 
 ##########################################################################################
