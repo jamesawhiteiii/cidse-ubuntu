@@ -237,8 +237,8 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 ##########################################################################################
 
 #Avahi-Daemon Patching
-cp /install/fse/patch/avahi/avahi-daemon.conf /etc/avahi/
-echo $(date) ${filename} SUCCESS: Avahi-Daemon patching completed >> /var/log/fse.log
+#cp /install/fse/patch/avahi/avahi-daemon.conf /etc/avahi/
+#echo $(date) ${filename} SUCCESS: Avahi-Daemon patching completed >> /var/log/fse.log
 
 ##########################################################################################
 ######################            MOUNT SOURCE FILESHARE	         #####################
@@ -359,13 +359,13 @@ chmod a+x /etc/lightdm/lightdm.conf
 ###############################                 CLEAN UP                #########################
 #################################################################################################
 #################################################################################################
-rm /home/techs/.config/autostart/provisioning.sh
+rm /home/techs/.config/autostart/provisioning.desktop
 rm /etc/rc.local
 
 #mkdir /var/log/fse/cidse
 #touch /var/log/fse/cidse/workstation_config.txt
 #
-echo "provisioning.sh complete"
+#echo "provisioning.sh complete"
 
 sleep 30
 reboot
