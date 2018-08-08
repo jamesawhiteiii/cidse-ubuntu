@@ -127,6 +127,12 @@ domainjoin-cli join fulton.ad.asu.edu
 echo $(date) ${filename} SUCCESS: $(hostname)successfully joined to fulton.ad.asu.edu >> /var/log/fse.log
 
 ##########################################################################################
+#############################       Configure Sudoers File             ###################
+##########################################################################################
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/scripts/configure_sudoers.sh
+
+
+##########################################################################################
 #############################       Configure Login PBIS-OPEN          ###################
 ##########################################################################################
 #
@@ -236,12 +242,24 @@ mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,usern
 ###############       cidse-fs-01.cidse.dhcp.asu.edu/linux/software       ###################
 ##########################################################################################
 
-#echo "Installing MATLAB2017a"
-#sh /mnt/source/linux/ubuntu/software/common/matlab/R2017a/install_matlab2017a.sh
+################################################################################
+#######################  STARTING MATLAB 2018a INSTALLER #######################
+################################################################################
 
+echo “Running MATLAB 2018a INSTALLER”
+sh /mnt/source/Apps/Mathworks/Matlab/Linux/2018a/install -inputFile /mnt/source/Apps/Mathworks/Matlab/Linux/2018a/installer_input.txt
+
+echo “Creating Symbolic Links for Easy Launch”
+ln -s /opt/Matlab/R2018a/bin/matlab /usr/local/bin/matlab
+
+################################################################################
+#######################  STARTING VMWARE 14.1.2 Install  #######################
+################################################################################
 #echo "Installing VMWARE 14 with Windows 10 VM"
 #sh /mnt/source/linux/ubuntu/software/common/vmware/14/install_vmware14.0.0.sh
-
+sh /mnt/source/Apps/VMware/Workstation/Linux/14/VMware-Workstation-Full-14.1.2-8497320.x86_64.bundle --console --required --eulas-agreed --set-setting vmware-workstation serialNumber N148H-J124N-581DE-03AH2-1DZ4J
+apt-get update
+apt-get install open-vm-tools-desktop -y
 
 ##########################################################################################
 ##########################################################################################
