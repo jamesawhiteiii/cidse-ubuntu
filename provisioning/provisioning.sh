@@ -299,7 +299,7 @@ chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 # Lightdm.conf file is set to allow TECHS to auto login
 #echo “Copying Lightdm.conf”
 cd /etc/lightdm/
-#rm /etc/lightdm/lightdm.conf
+rm /etc/lightdm/lightdm.conf
 wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
 chown root:root /etc/lightdm/lightdm.conf
 chmod a+x /etc/lightdm/lightdm.conf
@@ -309,13 +309,15 @@ chmod a+x /etc/lightdm/lightdm.conf
 ###############################                 CLEAN UP                #########################
 #################################################################################################
 #################################################################################################
-#rm /home/techs/Desktop
+rm /home/techs/.config/autostart/provisioning.sh
+rm /etc/rc.local
+
 #mkdir /var/log/fse/cidse
 #touch /var/log/fse/cidse/workstation_config.txt
 #
 echo "provisioning.sh complete"
 
-#sleep 10
-#reboot
+sleep 30
+reboot
 
 
