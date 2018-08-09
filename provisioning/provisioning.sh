@@ -129,28 +129,40 @@ echo $(date) ${filename} SUCCESS: $(hostname)successfully joined to fulton.ad.as
 
 ##########################################################################################
 ##########################################################################################
-#############################       Configure Sudoers File             ###################
+#############################       Add CIDSE IT to SUDO             ###################
 ##########################################################################################
-cd /tmp
-#wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/scripts/configure_sudoers.sh
-#sh /tmp/configure_sudoers.sh
-
 # Check if user is in root
 if [[ $EUID -ne 0 ]]; then
 echo "Please run in root"
 exit
 fi
-# get the groupname
-echo 'Please enter the name of the lab admins security group'
-echo 'The standardd lab admin groupname is: "CIDSE-<professor ASURITEID>_Lab_Admins"'
-echo 'Example: CIDSE-adoupe1_Lab_Admins'
-read -r Group
-Group="%FULTON\\\\\\$Group    ALL=(ALL:ALL) ALL"
 CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
+cat /etc/sudoers > /etc/sudoers.tmp
+echo "$CidseItGroup" >> /etc/sudoers.tmp
+
+##########################################################################################
+##########################################################################################
+#############################       Add Lab Admins to SUDO             ###################
+##########################################################################################
+
+# Verfiy Ownership and add proper Security Group to sudo
+echo "                        Who is the owner of this system ?"
+echo " "
+echo "   (Note: The system "owner" is the Faculty member who purchased the device )"
+echo 'Please enter the ASURITE ID:'
+read -r ASURITE
+ASURITE="%FULTON\\\\\\CIDSE-$ASURITE_Lab-Admins   ALL=(ALL:ALL) ALL"
+
+
+#echo 'The standardd lab admin groupname is: "CIDSE-<professor ASURITEID>_Lab_Admins"'
+#cho 'Example: CIDSE-adoupe1_Lab_Admins'
+#read -r Group
+#Group="%FULTON\\\\\\$Group    ALL=(ALL:ALL) ALL"
+#CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
 # add to the sudo file
 cat /etc/sudoers > /etc/sudoers.tmp
-echo "$Group" >> /etc/sudoers.tmp
-echo "$CidseItGroup" >> /etc/sudoers.tmp
+echo "$ASHRITE" >> /etc/sudoers.tmp
+
 clear
 echo 'Output of sudoers file'
 echo
@@ -166,6 +178,49 @@ echo 'Not commiting changes. Now exiting'
 fi
 rm /etc/sudoers.tmp
 cd /
+
+
+##########################################################################################
+##########################################################################################
+#############################       Configure Sudoers File             ###################
+##########################################################################################
+#cd /tmp
+#wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/scripts/configure_sudoers.sh
+#sh /tmp/configure_sudoers.sh
+
+# Check if user is in root
+#if [[ $EUID -ne 0 ]]; then
+#echo "Please run in root"
+#exit
+#fi
+
+## get the groupname
+#echo 'Please enter the name of the lab admins security group'
+#echo 'The standardd lab admin groupname is: "CIDSE-<professor ASURITEID>_Lab_Admins"'
+#echo 'Example: CIDSE-adoupe1_Lab_Admins'
+#read -r Group
+#Group="%FULTON\\\\\\$Group    ALL=(ALL:ALL) ALL"
+#CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
+
+## add to the sudo file
+#cat /etc/sudoers > /etc/sudoers.tmp
+#echo "$Group" >> /etc/sudoers.tmp
+#echo "$CidseItGroup" >> /etc/sudoers.tmp
+#clear
+#echo 'Output of sudoers file'
+#echo
+#cat /etc/sudoers.tmp
+#echo
+#echo 'Does the contents of the file look correct? [y/N]'
+#read -r answer
+
+#if [[ $answer = [yY] ]]; then
+#cp /etc/sudoers.tmp /etc/sudoers
+#else
+#echo 'Not commiting changes. Now exiting'
+#fi
+#rm /etc/sudoers.tmp
+#cd /
 
 ##########################################################################################
 #############################       Configure Login PBIS-OPEN          ###################
