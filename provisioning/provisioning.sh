@@ -245,14 +245,14 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 ######################            MOUNT SOURCE FILESHARE	         #####################
 ##########################################################################################
 
-echo “Installing CIFS-UTILS”
-apt-get install cifs-utils -y
+#echo “Installing CIFS-UTILS”
+#apt-get install cifs-utils -y
 
-echo “Making New Source Directory”
-mkdir /mnt/source/
+#echo “Making New Source Directory”
+#mkdir /mnt/source/
 
-echo “Mounting CIDSE-FS-01”
-mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
+#echo “Mounting CIDSE-FS-01”
+#mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
 #/
 ##########################################################################################
 
@@ -321,10 +321,10 @@ mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,usern
 ##########################################################################################
 ###########################    COPY TECHS PROFILE TEMPLATE   #############################
 ##########################################################################################
-echo "copying Default Techs Profile"
-rm -r /home/techs/
-cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/techs/ /home/
-chown -R techs /home/techs/
+#echo "copying Default Techs Profile"
+#rm -r /home/techs/
+#cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/techs/ /home/
+#chown -R techs /home/techs/
 
 
 ##########################################################################################
