@@ -253,7 +253,7 @@ mkdir /mnt/source/
 
 echo “Mounting CIDSE-FS-01”
 mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
-/
+#/
 ##########################################################################################
 
 ##########################################################################################
@@ -321,6 +321,7 @@ mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,usern
 ##########################################################################################
 ###########################    COPY TECHS PROFILE TEMPLATE   #############################
 ##########################################################################################
+echo "copying Default Techs Profile"
 rm -r /home/techs/
 cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/techs/ /home/
 chown -R techs /home/techs/
@@ -330,7 +331,7 @@ chown -R techs /home/techs/
 ############################   COPY DEFAULT USER PROFILE  ################################
 ##########################################################################################
 
-cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/default/. /etc/skel; \
+#cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/default/. /etc/skel; \
 
 
 ##########################################################################################
@@ -348,7 +349,7 @@ chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 ##########################################################################################
 ############################   Set Login Configuration     ###############################
 # Lightdm.conf file is set to allow TECHS to auto login
-#echo “Copying Lightdm.conf”
+echo “Copying Lightdm.conf”
 cd /etc/lightdm/
 rm /etc/lightdm/lightdm.conf
 wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
@@ -366,9 +367,9 @@ rm /etc/rc.local
 #mkdir /var/log/fse/cidse
 #touch /var/log/fse/cidse/workstation_config.txt
 #
-#echo "provisioning.sh complete"
+echo "provisioning.sh complete"
 
 sleep 30
-reboot
+#reboot
 
 
