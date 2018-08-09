@@ -158,7 +158,7 @@ echo 'The standardd lab admin groupname is: "CIDSE-<professor ASURITEID>_Lab_Adm
 echo 'Example: CIDSE-adoupe1_Lab_Admins'
 read -r Group
 Group="%FULTON\\\\\\$Group    ALL=(ALL:ALL) ALL"
-CidseItGroup='%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL'
+CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
 # add to the sudo file
 cat /etc/sudoers > /etc/sudoers.tmp
 echo "$Group" >> /etc/sudoers.tmp
