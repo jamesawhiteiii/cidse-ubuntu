@@ -161,7 +161,7 @@ ASURITE="%FULTON\\\\\\CIDSE-$ASURITE_Lab-Admins   ALL=(ALL:ALL) ALL"
 #CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
 # add to the sudo file
 cat /etc/sudoers > /etc/sudoers.tmp
-echo "$ASHRITE" >> /etc/sudoers.tmp
+echo "$ASURITE" >> /etc/sudoers.tmp
 
 clear
 echo 'Output of sudoers file'
