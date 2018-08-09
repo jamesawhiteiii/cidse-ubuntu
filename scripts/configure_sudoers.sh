@@ -27,8 +27,8 @@ echo 'Does the contents of the file look correct? [y/N]'
 read -r answer
 
 if [[ $answer = [yY] ]]; then
-cp /etc/sudoers.tmp /etc/sudoers
+cp /etc/sudoers.tmp /etc/sudoers && rm /etc/sudoers.tmp
 else
 echo 'Not commiting changes. Now exiting'
 fi
-rm /etc/sudoers.tmp
+
