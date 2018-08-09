@@ -139,88 +139,76 @@ fi
 CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
 cat /etc/sudoers > /etc/sudoers.tmp
 echo "$CidseItGroup" >> /etc/sudoers.tmp
-
+### Write to log
+echo $(date) ${filename} SUCCESS: %FULTON\\\cidse-it add to sudoers >> /var/log/fse.log
+echo "**********************************************************"
+echo "CIDSE IT Group has been added to sudoers"
+echo "**********************************************************"
+clear
 ##########################################################################################
 ##########################################################################################
 #############################       Add Lab Admins to SUDO             ###################
 ##########################################################################################
-
-# Verfiy Ownership and add proper Security Group to sudo
+#
+########## .        Verify Ownership and add proper Security Group to sudo
+echo "**********************************************************************************"  
+echo ""
 echo "                        Who is the owner of this system ?"
 echo " "
-echo "   (Note: The system "owner" is the Faculty member who purchased the device )"
-echo 'Please enter the ASURITE ID:'
-read -r ASURITE
-ASURITE="%FULTON\\\\\\CIDSE-$ASURITE_Lab-Admins   ALL=(ALL:ALL) ALL"
-
-
-#echo 'The standardd lab admin groupname is: "CIDSE-<professor ASURITEID>_Lab_Admins"'
-#cho 'Example: CIDSE-adoupe1_Lab_Admins'
-#read -r Group
-#Group="%FULTON\\\\\\$Group    ALL=(ALL:ALL) ALL"
-#CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
-# add to the sudo file
-cat /etc/sudoers > /etc/sudoers.tmp
-echo "$ASURITE" >> /etc/sudoers.tmp
+echo "   (Note: The system "OWNER" is the Faculty member who purchased the device )"
+echo ""
+echo "**********************************************************************************"  
+echo ""
+echo "Please enter the owners ASURITE ID (example: adoupe1, jwhite40, lslade):"
+read -r owner
+echo "**********************************************************************************"             
+echo ""
+owner="$owner"
+Group="%FULTON\\\\\\CIDSE-"$owner"_Lab_Admins    ALL=(ALL:ALL) ALL"
+###
+echo ""
+echo ""
+read -p "You have indicated that the owner of this system is $owner? Is this correct? (Y)es/(N)o?" choice
+case "$choice" in 
+  y|Y ) echo "yes";;
+  n|N ) echo "****************************************************************************"
+        echo "****************************************************************************"
+        echo "****************************************************************************"
+        echo "        OWNER CONFIGURATION CAN NOT BE COMPLETED AT THIS TIME :(          "
+        echo "    Please verify who owns this system and restart the configuration       "
+        echo "****************************************************************************"; return;;
+  * ) echo "invalid"; return;;
+esac
+echo " **********************************************************************************"
+echo " **********************************************************************************"
 
 clear
-echo 'Output of sudoers file'
-echo
+###
+### add to the sudo file
+echo " Configuring ownership and setting up proper sudoer access"
+cat /etc/sudoers > /etc/sudoers.tmp
+echo "$Group" >> /etc/sudoers.tmp
+
+###Write to log
+echo $(date) ${filename} SUCCESS: Owner set to "$ASURITE" >> /var/log/fse.log
+clear
+###
+
+echo "Output of sudoers file"
+echo "**********************************************************"
 cat /etc/sudoers.tmp
+echo "**********************************************************"
+echo "**********************************************************"
 echo
-echo 'Does the contents of the file look correct? [y/N]'
+echo 'Do the contents of the sudoers file look correct? [Y/N]?'
 read -r answer
-
+echo "**********************************************************"
 if [[ $answer = [yY] ]]; then
-cp /etc/sudoers.tmp /etc/sudoers
+    cp /etc/sudoers.tmp /etc/sudoers && echo "Device Ownership and SUDOERS have been configured" && rm /etc/sudoers.tmp
+    echo $(date) ${filename} SUCCESS: Device Ownership $owner and SUDOERS have been configured >> /var/log/fse.log
 else
-echo 'Not commiting changes. Now exiting'
+echo 'Not committing changes. Exiting Now'
 fi
-rm /etc/sudoers.tmp
-cd /
-
-
-##########################################################################################
-##########################################################################################
-#############################       Configure Sudoers File             ###################
-##########################################################################################
-#cd /tmp
-#wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/scripts/configure_sudoers.sh
-#sh /tmp/configure_sudoers.sh
-
-# Check if user is in root
-#if [[ $EUID -ne 0 ]]; then
-#echo "Please run in root"
-#exit
-#fi
-
-## get the groupname
-#echo 'Please enter the name of the lab admins security group'
-#echo 'The standardd lab admin groupname is: "CIDSE-<professor ASURITEID>_Lab_Admins"'
-#echo 'Example: CIDSE-adoupe1_Lab_Admins'
-#read -r Group
-#Group="%FULTON\\\\\\$Group    ALL=(ALL:ALL) ALL"
-#CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
-
-## add to the sudo file
-#cat /etc/sudoers > /etc/sudoers.tmp
-#echo "$Group" >> /etc/sudoers.tmp
-#echo "$CidseItGroup" >> /etc/sudoers.tmp
-#clear
-#echo 'Output of sudoers file'
-#echo
-#cat /etc/sudoers.tmp
-#echo
-#echo 'Does the contents of the file look correct? [y/N]'
-#read -r answer
-
-#if [[ $answer = [yY] ]]; then
-#cp /etc/sudoers.tmp /etc/sudoers
-#else
-#echo 'Not commiting changes. Now exiting'
-#fi
-#rm /etc/sudoers.tmp
-#cd /
 
 ##########################################################################################
 #############################       Configure Login PBIS-OPEN          ###################
