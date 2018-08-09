@@ -12,7 +12,7 @@
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
-
+clear
 echo " ********************************************************************************"
 echo " ********************************************************************************"
 echo " ************              FSE UBUNTU CLIENT SETUP             ******************"
@@ -47,7 +47,7 @@ echo "Your new hostname is $newhost"
 echo " **********************************************************************************"
 echo " **********************************************************************************"
 hostname $newhost
-
+clear
 ##########################################################################################
 ############################        SET ASU OWNER (ASURITE ID)    ########################
 ##########################################################################################
@@ -64,7 +64,7 @@ read -p "Please enter the owners ASURITE ID, followed by [ENTER]: " fse_owner
 echo  "${fse_owner}" >> /etc/fse.owner
 #Send to log file
 echo $(date) ${filename} SUCCESS: ${fse_owner} owns this system >>/var/log/fse.log
-
+clear
 ##########################################################################################
 ####################                   CONFIGURE                  ########################
 ####################                 ACTIVE DIRECTORY             ########################
@@ -111,7 +111,7 @@ esac
 echo " **********************************************************************************"
 echo " **********************************************************************************"
 
-
+clear
 ##########################################################################################
 #############################        Join FULTON.AD.ASU.EDU.           ###################
 ##########################################################################################
@@ -126,18 +126,6 @@ domainjoin-cli join fulton.ad.asu.edu
 #
 #Send to log file
 echo $(date) ${filename} SUCCESS: $(hostname)successfully joined to fulton.ad.asu.edu >> /var/log/fse.log
-
-##########################################################################################
-#############################       Configure Login PBIS-OPEN          ###################
-##########################################################################################
-/opt/pbis/bin/config UserDomainPrefix ASUAD
-/opt/pbis/bin/config AssumeDefaultDomain true 
-/opt/pbis/bin/config LoginShellTemplate /bin/bash 
-#/opt/pbis/bin/config HomeDirTemplate %H/%U 
-#/opt/pbis/bin/config RequireMembershipOf 
-
-#Send to log file
-echo $(date) ${filename} SUCCESS: PBIS-Open Client Configuration >> /var/log/fse.log
 
 ##########################################################################################
 ##########################################################################################
@@ -179,7 +167,19 @@ fi
 rm /etc/sudoers.tmp
 cd /
 
+##########################################################################################
+#############################       Configure Login PBIS-OPEN          ###################
+##########################################################################################
+/opt/pbis/bin/config UserDomainPrefix ASUAD
+/opt/pbis/bin/config AssumeDefaultDomain true 
+/opt/pbis/bin/config LoginShellTemplate /bin/bash 
+#/opt/pbis/bin/config HomeDirTemplate %H/%U 
+#/opt/pbis/bin/config RequireMembershipOf 
 
+#Send to log file
+echo $(date) ${filename} SUCCESS: PBIS-Open Client Configuration >> /var/log/fse.log
+
+clear
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
@@ -252,7 +252,7 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 #mkdir /mnt/source/
 
 #echo “Mounting CIDSE-FS-01”
-#mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
+mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
 #/
 ##########################################################################################
 
@@ -321,10 +321,10 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 ##########################################################################################
 ###########################    COPY TECHS PROFILE TEMPLATE   #############################
 ##########################################################################################
-#echo "copying Default Techs Profile"
-#rm -r /home/techs/
-#cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/techs/ /home/
-#chown -R techs /home/techs/
+echo "copying Default Techs Profile"
+rm -r /home/techs/
+cp -r /mnt/source/linux/ubuntu/config/cidse/workstation/profiles/techs/ /home/
+chown -R techs /home/techs/
 
 
 ##########################################################################################
