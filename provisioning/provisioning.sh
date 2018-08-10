@@ -46,12 +46,11 @@ echo " *************************************************************************
 echo " **********************************************************************************"
 echo "Please wait...setting the hostname of this system to $newhost..."
 echo 
-sleep 5
 echo " **********************************************************************************"
 echo " **********************************************************************************"
 hostname $newhost
-echo " Hostname has been updated to:
-hostname
+echo " Hostname has been updated to $newhost"
+
 echo " **********************************************************************************"
 ### Write out to log
 echo $(date) ${filename} SUCCESS: Hostname is $newhost >>/var/log/fse.log
