@@ -396,8 +396,8 @@ rm /etc/rc.local
 #touch /var/log/fse/cidse/workstation_config.txt
 #
 echo "provisioning.sh complete"
-
-sleep 30
+service lightdm restart
+#sleep 30
 #reboot
 
 
