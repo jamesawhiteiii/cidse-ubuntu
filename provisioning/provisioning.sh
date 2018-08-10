@@ -265,13 +265,13 @@ echo $(date) ${filename} SUCCESS: FSE Landscape Registration Complete >> /var/lo
 ######################            MOUNT SOURCE FILESHARE	         #####################
 ##########################################################################################
 
-#echo “Installing CIFS-UTILS”
-#apt-get install cifs-utils -y
+echo “Installing CIFS-UTILS”
+apt-get install cifs-utils -y
 
-#echo “Making New Source Directory”
-#mkdir /mnt/source/
+echo “Making New Source Directory”
+mkdir /mnt/source/
 
-#echo “Mounting CIDSE-FS-01”
+echo “Mounting CIDSE-FS-01”
 mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
 #/
 ##########################################################################################
@@ -382,15 +382,15 @@ clear
 echo " ********************************************************************************"
 echo " *************               Configuring GRUB                  ******************"
 echo " ********************************************************************************"
-cd /usr/share/backgrounds/
+#cd /usr/share/backgrounds/
 ### Get the grub image from repo
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/CIDSE2018.grub.jpg
-chown root:root /usr/share/backgrounds/CIDSE2018.grub.jpg
+#wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/CIDSE2018.grub.jpg
+#chown root:root /usr/share/backgrounds/CIDSE2018.grub.jpg
 ###Get Grub file
-cd /etc/default/grub
-mv /etc/default/grub /etc/default/grub.bak
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub.cfg
-update-grub
+#cd /etc/default/grub
+#mv /etc/default/grub /etc/default/grub.bak
+#wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub.cfg
+#update-grub
 
 ##########################################################################################
 ############################   Set Login Configuration     ###############################
