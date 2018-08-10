@@ -382,15 +382,15 @@ clear
 echo " ********************************************************************************"
 echo " *************               Configuring GRUB                  ******************"
 echo " ********************************************************************************"
-#cd /usr/share/backgrounds/
+cd /usr/share/backgrounds/
 ### Get the grub image from repo
-#wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/CIDSE2018.grub.jpg
-#chown root:root /usr/share/backgrounds/CIDSE2018.grub.jpg
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/CIDSE2018.grub.jpg
+chown root:root /usr/share/backgrounds/CIDSE2018.grub.jpg
 ###Get Grub file
-#cd /etc/default/grub
-#mv /etc/default/grub /etc/default/grub.bak
-#wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub.cfg
-#update-grub
+cd /etc/default/
+mv /etc/default/grub /etc/default/grub.bak
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub.cfg
+update-grub
 
 ##########################################################################################
 ############################   Set Login Configuration     ###############################
