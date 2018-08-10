@@ -13,28 +13,28 @@
 ##########################################################################################
 clear
 ##########################################################################################
-echo " ********************************************************************************"
-echo " ********************************************************************************"
-echo " ************              FSE UBUNTU CLIENT SETUP             ******************"
+echo " *****************************************************************************"
+echo " *****************************************************************************"
+echo " *********              FSE UBUNTU CLIENT SETUP             ******************"
 echo " ********************************************************************************"
 ##########################################################################################
 #################################     SET HOSTNAME      ##################################
 ##########################################################################################
-echo " ********************************************************************************"
-echo " ************                   SET HOSTNAME                   ******************"
-echo " ********************************************************************************"
+echo " *****************************************************************************"
+echo " *********                   SET HOSTNAME                   ******************"
+echo " *****************************************************************************"
 ### Assign existing hostname to $hostn
 hostn=$(cat /etc/hostname)
 ### Display existing hostname
 echo "The current hostname of this systems is $hostn"
 ### Ask for new hostname $newhost
-echo " ******************************************************************************"
-echo " ******************************************************************************"
+echo " *****************************************************************************"
+echo " *****************************************************************************"
 echo " "
 echo " Please enter the desired hostname for this system: "
 read newhost
-echo " ******************************************************************************"
-echo " ******************************************************************************"
+echo " *****************************************************************************"
+echo " *****************************************************************************"
 #change hostname in /etc/hosts & /etc/hostname
 sed -i "s/$hostn/$newhost/g" /etc/hosts
 sed -i "s/$hostn/$newhost/g" /etc/hostname
@@ -44,12 +44,15 @@ echo " *************************************************************************
 clear
 echo " **********************************************************************************"
 echo " **********************************************************************************"
-echo " "echo "Setting the hostname of this system to $newhost..."
+echo "Please wait...setting the hostname of this system to $newhost..."
 echo 
 sleep 5
 echo " **********************************************************************************"
 echo " **********************************************************************************"
 hostname $newhost
+echo " Hostname has been updated to:
+hostname
+echo " **********************************************************************************"
 ### Write out to log
 echo $(date) ${filename} SUCCESS: Hostname is $newhost >>/var/log/fse.log
 clear
@@ -75,17 +78,17 @@ echo " *************************************************************************
 ##########################################################################################
 #Require the technician to verify whether or not the computer has been prestaged in AD. 
 echo " "
-echo " ********************************************************************************"
-echo " ************              Active Directory Pre-Stage          ******************"
-echo " ********************************************************************************"
+echo "  *******************************************************************************"
+echo "  ************           Active Directory Pre-Stage             *****************"
+echo "  *******************************************************************************"
 echo " "
 read -p "Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?" choice
 case "$choice" in 
   y|Y ) echo "yes";;
-  n|N ) echo "****************************************************************************"
-        echo "****************************************************************************"
-        echo "****************************************************************************"
-        echo "        UBUNTU CLIENT CONFIGURATION CAN NOT BE RUN AT THIS TIME :(          "
+  n|N ) echo "*************************************************************************"
+        echo "*************************************************************************"
+        echo "*************************************************************************"
+        echo "       UBUNTU CLIENT CONFIGURATION CAN NOT BE RUN AT THIS TIME :(          "
         echo "Please pre-stage this system in Active Directory, with the desired hostname"
         echo "****************************************************************************"; return;;
   * ) echo "invalid"; return;;
@@ -102,7 +105,7 @@ echo " *************            JOINING TO ACTIVE DIRECTORY          ***********
 echo " ********************************************************************************"
 echo " "
 echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to Active Directory"
-#echo "DOMAIN= FULTON"
+echo "     This is your AD account (example: jwhite40ad)                               "
 domainjoin-cli join fulton.ad.asu.edu 
 #
 #Send to log file
@@ -143,10 +146,11 @@ echo "   (Note: The system "OWNER" is the Faculty member who purchased the devic
 echo ""
 echo "**********************************************************************************"  
 echo ""
-echo "Please enter the owners ASURITE ID (example: adoupe1, jwhite40, lslade):"
+echo "Please enter the owners ASURITE ID (example: adoupe1, huanliu, sshirva43):"
 read -r owner
 echo "**********************************************************************************"             
 echo ""
+##SetVariables
 owner="$owner"
 Group="%FULTON\\\\\\CIDSE-"$owner"_Lab_Admins    ALL=(ALL:ALL) ALL"
 echo ""
@@ -177,7 +181,7 @@ echo " *************************************************************************
 echo " Please wait..."
 cat /etc/sudoers > /etc/sudoers.tmp
 echo "$Group" >> /etc/sudoers.tmp
-
+cp /etc/sudoers.tmp /etc/sudoers
 ###Write to log
 echo $(date) ${filename} SUCCESS: Owner set to "$ASURITE" >> /var/log/fse.log
 clear
@@ -189,7 +193,7 @@ cat /etc/sudoers.tmp
 echo "*********************************************************************************"
 echo "*********************************************************************************"
 echo ""
-echo 'Do the contents of the sudoers file look correct? [Y/N]?'
+echo 'Looking at the lines above, has the correct security group been added to the sudoers file? [Y/N]?'
 read -r answer
 echo "*********************************************************************************"
 if [[ $answer = [yY] ]]; then
