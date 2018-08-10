@@ -28,8 +28,8 @@ hostn=$(cat /etc/hostname)
 ### Display existing hostname
 echo "The current hostname of this systems is $hostn"
 ### Ask for new hostname $newhost
-echo " *****************************************************************************"
-echo " *****************************************************************************"
+echo " ****************************************************************************"
+echo " ****************************************************************************"
 echo " "
 echo " Please enter the desired hostname for this system: "
 read newhost
