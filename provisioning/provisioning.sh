@@ -389,7 +389,7 @@ chown root:root /usr/share/backgrounds/CIDSE2018.grub.jpg
 ###Get Grub file
 cd /etc/default/
 mv /etc/default/grub /etc/default/grub.bak
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub.cfg
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub
 mv /etc/default/grub.cfg /etc/default/grub
 update-grub
 
