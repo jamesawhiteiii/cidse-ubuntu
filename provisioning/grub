@@ -33,6 +33,6 @@ GRUB_CMDLINE_LINUX=""
 # Uncomment to get a beep at grub start
 #GRUB_INIT_TUNE="480 440 1"
 
-export GRUB_MENU_PICTURE="/usr/share/backgrounds/grub.jpeg"
+export GRUB_MENU_PICTURE="/usr/share/backgrounds/CIDSE2018.grub.jpg"
 export GRUB_COLOR_NORMAL="light-gray/black"
 export GRUB_COLOR_HIGHLIGHT="yellow/light-gray"
