@@ -5,7 +5,7 @@
 # Program name      : provisioning.sh
 # Author            : James White III
 # Contributors
-# Date created      : 07 24 2018
+# Date created      : 08 09 2018
 #
 # Purpose           : Apply department specific configuration to new Ubuntu Clients
 #
