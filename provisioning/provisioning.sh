@@ -230,16 +230,6 @@ landscape-config --computer-title $(hostname -f) --script-users nobody,landscape
 #Send to log file
 echo $(date) ${filename} SUCCESS: FSE Landscape Registration Complete >> /var/log/fse.log
 
-##########################################################################################
-###########################             Reset Login Screen               #################
-##########################################################################################
-
-cp /install/fse/login/firstlogin/lightdm.conf /etc/lightdm/
-chown root:root /etc/lightdm/lightdm.conf
-chmod a+x /etc/lightdm/lightdm.conf
-
-#Send to log file
-echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.log
 
 ##########################################################################################
 ######## 18.04 Systems Only
@@ -375,6 +365,32 @@ wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provis
 chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
 chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 
+##########################################################################################
+###########################             Reset Login Screen               #################
+##########################################################################################
+echo " ********************************************************************************"
+echo " *************           Configuring the login screen             ******************"
+echo " ********************************************************************************"
+echo " Please wait..."
+cp /install/fse/login/firstlogin/lightdm.conf /etc/lightdm/
+chown root:root /etc/lightdm/lightdm.conf
+chmod a+x /etc/lightdm/lightdm.conf
+
+#Send to log file
+echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.log
+clear
+echo " ********************************************************************************"
+echo " *************               Configuring GRUB                  ******************"
+echo " ********************************************************************************"
+cd /usr/share/backgrounds/
+### Get the grub image from repo
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/CIDSE2018.grub.jpg
+chown root:root /usr/share/backgrounds/CIDSE2018.grub.jpg
+###Get Grub file
+cd /etc/default/grub
+mv /etc/default/grub /etc/default/grub.bak
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub.cfg
+update-grub
 
 ##########################################################################################
 ############################   Set Login Configuration     ###############################
