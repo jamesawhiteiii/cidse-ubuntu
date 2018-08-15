@@ -382,10 +382,11 @@ clear
 echo " ********************************************************************************"
 echo " *************               Configuring GRUB                  ******************"
 echo " ********************************************************************************"
-cd /usr/share/backgrounds/
+apt-get install grub2-splashimages
+cd /usr/share/images/grub/
 ### Get the grub image from repo
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/CIDSE2018.grub.jpg
-chown root:root /usr/share/backgrounds/CIDSE2018.grub.jpg
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/grub.jpg
+chown root:root /usr/share/images/grub.jpg
 ###Get Grub file
 cd /etc/default/
 mv /etc/default/grub /etc/default/grub.bak
