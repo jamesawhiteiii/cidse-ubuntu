@@ -382,16 +382,17 @@ clear
 echo " ********************************************************************************"
 echo " *************               Configuring GRUB                  ******************"
 echo " ********************************************************************************"
+### Install grub2-splashimages
 apt-get install grub2-splashimages
-cd /usr/share/images/grub/
 ### Get the grub image from repo
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/grub.jpg
-chown root:root /usr/share/images/grub.jpg
+cd /usr/share/images/grub/
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/grub.tga
+chown root:root /usr/share/images/grub/grub.tga
 ###Get Grub file
 cd /etc/default/
 mv /etc/default/grub /etc/default/grub.bak
 wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub
-mv /etc/default/grub.cfg /etc/default/grub
+#mv /etc/default/grub.cfg /etc/default/grub
 update-grub
 
 ##########################################################################################
