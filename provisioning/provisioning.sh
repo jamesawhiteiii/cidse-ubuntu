@@ -115,6 +115,7 @@ echo " "
 CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
 cat /etc/sudoers > /etc/sudoers.tmp
 echo "$CidseItGroup" >> /etc/sudoers.tmp
+cp /etc/sudoers.tmp /etc/sudoers
 ### Write to log
 echo $(date) ${filename} SUCCESS: %FULTON\\\cidse-it add to sudoers >> /var/log/fse.log
 echo "           **********************************************************"
