@@ -383,6 +383,8 @@ echo " *************************************************************************
 echo " *************               Configuring GRUB                  ******************"
 echo " ********************************************************************************"
 ### Install grub2-splashimages
+apt-get update
+apt-get -f install
 apt-get install grub2-splashimages
 ### Get the grub image from repo
 cd /usr/share/images/grub/
