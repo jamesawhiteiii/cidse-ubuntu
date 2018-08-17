@@ -241,18 +241,18 @@ echo $(date) ${filename} SUCCESS: FSE Landscape Registration Complete >> /var/lo
 #the first grep returns the line containing the version number
 #the second grep determins if it 18.04
 
-#ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep -q 18.04)
+ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep -q 18.04)
 
 # ver_chk will return as a 0 if the grep is matched
 # If no match, it will return a 1
 
-#if ${ver_chk};
-#then
+if ${ver_chk};
+then
 #       
-#else
-#        rm /etc/gdm3/custom.conf
-#        mv /etc/gdm3/custom.conf.bak /etc/gdm3/custom.conf
-#fi
+else
+  rm /etc/gdm3/custom.conf
+  mv /etc/gdm3/custom.conf.bak /etc/gdm3/custom.conf
+fi
 
 ##########################################################################################
 #######################              CLIENT PATCHING                ######################
