@@ -18,6 +18,9 @@
 # Get the filename for logging
 filename=$(echo $0 | rev | cut -d'/' -f1 | rev)
 
+# Set the OS version variable
+ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep 18.04)
+
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
@@ -45,8 +48,6 @@ echo "Network connection present"
 echo
 fi
 
-
-
 #####################################################################
 # Check for root privileges                                         #
 #####################################################################
@@ -59,6 +60,16 @@ exit 1
 fi
 ##Send to log file
 echo $(date) ${filename} SUCCESS: FSE Client Configuration Complete >> /var/log/fse.log
+
+
+######################################################################
+# Set background                                                     #
+######################################################################
+if [ "${ver_chk}" ];
+then
+        # Set the 18.04 background
+		gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/warty-final-ubuntu.png
+fi
 
 ##########################################################################################
 ##################    GET DEPARTMENT SPECIFIC CONFIGURATION       ########################

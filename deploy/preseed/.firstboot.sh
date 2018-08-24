@@ -22,6 +22,14 @@ sleep 10
 # Set filename variable for use in logging
 filename=$(echo $0 | rev | cut -d'/' -f1 | rev)
 
+#the lsb-release file has information on the Ubuntu version
+#the first grep returns the line containing the version number
+#the second grep determins if it 18.04
+
+ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep 18.04)
+
+# ver_chk will return empty/false if not 18.04
+
 #####################################################################
 # Checking for internet connectivity                                #
 #####################################################################
@@ -43,36 +51,27 @@ fi
 #######################           Configure Login Screen           #######################
 ##########################################################################################
 ##########################################################################################
-### Sets the LightDm to auto login
-### 14.04 and 16.04 System Only
-cp /install/fse/login/lightdm.conf /etc/lightdm/
-chown root:root /etc/lightdm/lightdm.conf
-chmod a+x /etc/lightdm/lightdm.conf
-echo $(date) ${filename} SUCCESS: Login Screen Configured >> /var/log/fse.log
 
-#this file will do two things
-	#1. remove welcome screen
-	#2. configure auto login
 
-#the lbs-release file has information on the Ubuntu version
-#the first grep returns the line containing the version number
-#the second grep determins if it 18.04
 
-ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep -q 18.04)
-
-# ver_chk will return as a 0 if the grep is matched
-# If no match, it will return a 1
-
-if ${ver_chk};
+if [ "${ver_chk}" ];
 then
-        echo 'this is anything but 18'
-else
-        echo 'this is 18'
+        echo $(date) ${filename} LOG: Version is 18.04, performing 18.04 specific tasks >> /var/log/fse.log
         sudo apt-get remove gnome-initial-setup -y
         mv /etc/gdm3/custom.conf /etc/gdm3/custom.conf.bak
         cp /install/fse/scripts/1804/custom.conf /etc/gdm3/custom.conf
         chown root:root /etc/gdm3/custom.conf
         chmod 644 /etc/gdm3/custom.conf
+		echo $(date) ${filename} SUCCESS: 18.04 login configured >> /var/log/fse.log
+		
+else
+		echo $(date) ${filename} LOG: Version is earlier than 18.04, performing 16.04 & earlier tasks >> /var/log/fse.log
+		### Sets the LightDm to auto login
+		### 14.04 and 16.04 System Only
+		cp /install/fse/login/lightdm.conf /etc/lightdm/
+		chown root:root /etc/lightdm/lightdm.conf
+		chmod a+x /etc/lightdm/lightdm.conf
+		echo $(date) ${filename} SUCCESS: 16.04 login configured >> /var/log/fse.log
 fi
 
 ##########################################################################################
@@ -93,12 +92,12 @@ echo $(date) ${filename} SUCCESS: GKSU Installed >> /var/log/fse.log
 
 apt-get install clamav-daemon -y
 apt-get install clamtk -y
-echo $(date) ${filename} SUCCESS: PBIS-OPEN Repo Added >> /var/log/fse.log
+echo $(date) ${filename} SUCCESS: Clam-AV installed >> /var/log/fse.log
 ##########################################################################################
 #######################             PBIS Client Repo        ##############################
 ##########################################################################################
 
-wget -O - http://repo.pbis.beyondtrust.com/apt/RPM-GPG-KEY-pbis|sudo apt-key add - 
+wget -O - http://repo.pbis.beyondtrust.com/apt/RPM-GPG-KEY-pbis | sudo apt-key add - 
 sudo wget -O /etc/apt/sources.list.d/pbiso.list http://repo.pbis.beyondtrust.com/apt/pbiso.list 
 sudo apt-get update
 echo $(date) ${filename} SUCCESS: PBIS-OPEN Repo Added >> /var/log/fse.log
@@ -123,7 +122,7 @@ echo $(date) ${filename} SUCCESS: Landscape-Client Installed >> /var/log/fse.log
 ##########################################################################################
 
 apt-get install openssh-server -y
-echo $(date) ${filename} SUCCESS: Open SSH Server Installed >> /var/log/fse.log
+echo $(date) ${filename} SUCCESS: Open SSH Server installed >> /var/log/fse.log
 
 ##########################################################################################
 ##########################################################################################
@@ -138,7 +137,7 @@ echo $(date) ${filename} SUCCESS: Open SSH Server Installed >> /var/log/fse.log
 rm -R /home/techs/.config/
 cp -a /install/fse/profiles/techs/.config/ /home/techs/.config/
 chown -R techs:techs /home/techs/
-echo $(date) ${filename} SUCCESS: Techs Profile Configured >> /var/log/fse.log
+echo $(date) ${filename} SUCCESS: Techs profile copied and configured >> /var/log/fse.log
 
 ##########################################################################################
 
@@ -154,7 +153,7 @@ echo $(date) ${filename} SUCCESS: Techs Profile Configured >> /var/log/fse.log
 
 # Add entry to hosts file for Landscape server
 echo 10.220.67.136 landscape.fulton.asu.edu >> /etc/hosts
-echo $(date) ${filename} SUCCESS: Host File Modified >> /var/log/fse.log
+echo $(date) ${filename} SUCCESS: Host file modified for Landscape >> /var/log/fse.log
 ##########################################################################################
 
 ##########################################################################################
@@ -179,7 +178,7 @@ mv /etc/landscape/client.conf /etc/landscape/client.conf.bak
 ##########################################################################################
 
 cp /install/fse/landscape/client.conf /etc/landscape/
-echo $(date) ${filename} SUCCESS: Landscape Client Config Copied >> /var/log/fse.log
+echo $(date) ${filename} SUCCESS: Landscape client config copied >> /var/log/fse.log
 
 
 
@@ -200,7 +199,10 @@ rm /usr/share/backgrounds/warty-final-ubuntu.png
 cp /install/fse/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
 chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
 chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
+
 echo $(date) ${filename} SUCCESS: Set FSE Deployment Background  >> /var/log/fse.log
+
+
 ##########################################################################################
 ##########################################################################################
 ################################        CLEANUP         ##################################
@@ -212,9 +214,15 @@ echo $(date) ${filename} SUCCESS: Completed  >> /var/log/fse.log
 
 ##########################################################################################
 
-service lightdm restart
+# Restart GUI environment for 18.04/16.04 and earlier
+# ver_chk will return empty/false if not 18.04
 
-
-
-
-
+if [ "${ver_chk}" ];
+then
+        # Restart 18.04 GUI
+		killall -3 gnome-shell
+		
+else
+		# Restart 16.04/Earlier GUI
+		service lightdm restart
+fi

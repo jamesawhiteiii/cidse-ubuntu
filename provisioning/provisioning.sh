@@ -17,6 +17,10 @@ echo " *************************************************************************
 echo " *****************************************************************************"
 echo " *********              FSE UBUNTU CLIENT SETUP             ******************"
 echo " ********************************************************************************"
+
+# Set the OS version variable
+ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep 18.04)
+
 ##########################################################################################
 #################################     SET HOSTNAME      ##################################
 ##########################################################################################
@@ -232,27 +236,7 @@ landscape-config --computer-title $(hostname -f) --script-users nobody,landscape
 echo $(date) ${filename} SUCCESS: FSE Landscape Registration Complete >> /var/log/fse.log
 
 
-##########################################################################################
-######## 18.04 Systems Only
-##########################################################################################
-#this file will remove autologin
 
-#the lbs-release file has information on the Ubuntu version
-#the first grep returns the line containing the version number
-#the second grep determins if it 18.04
-
-ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep -q 18.04)
-
-# ver_chk will return as a 0 if the grep is matched
-# If no match, it will return a 1
-
-if ${ver_chk};
-then
-#       
-else
-  rm /etc/gdm3/custom.conf
-  mv /etc/gdm3/custom.conf.bak /etc/gdm3/custom.conf
-fi
 
 ##########################################################################################
 #######################              CLIENT PATCHING                ######################
@@ -365,6 +349,11 @@ rm /usr/share/backgrounds/warty-final-ubuntu.png
 wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/warty-final-ubuntu.png
 chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
 chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
+if [ "${ver_chk}" ];
+then
+        # Set the 18.04 background (this may need to be in the firstlogin script)
+		gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/warty-final-ubuntu.png
+fi
 
 ##########################################################################################
 ###########################             Reset Login Screen               #################
@@ -399,14 +388,27 @@ wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provis
 update-grub
 
 ##########################################################################################
-############################   Set Login Configuration     ###############################
+############################   Reset Login Configuration     ###############################
 # Lightdm.conf file is set to allow TECHS to auto login
-echo “Copying Lightdm.conf”
-cd /etc/lightdm/
-rm /etc/lightdm/lightdm.conf
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
-chown root:root /etc/lightdm/lightdm.conf
-chmod a+x /etc/lightdm/lightdm.conf
+
+# ver_chk will return as a 0 if the grep is matched
+# If no match, it will return a 1
+
+if [ "${ver_chk}" ];
+then
+	# Disable autologin for 18.04
+	rm /etc/gdm3/custom.conf
+	mv /etc/gdm3/custom.conf.bak /etc/gdm3/custom.conf
+else
+	echo “Copying Lightdm.conf”
+	# Remove autologin version of lightdm
+	rm /etc/lightdm/lightdm.conf
+	# This is the lightdm file without autologin
+	wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
+	chown root:root /etc/lightdm/lightdm.conf
+	chmod a+x /etc/lightdm/lightdm.conf
+fi
+
 
 #################################################################################################
 #################################################################################################
@@ -420,8 +422,18 @@ rm /etc/rc.local
 #touch /var/log/fse/cidse/workstation_config.txt
 #
 echo "provisioning.sh complete"
-service lightdm restart
-#sleep 30
-#reboot
+
+# Restart GUI environment for 18.04/16.04 and earlier
+# ver_chk will return empty/false if not 18.04
+
+if [ "${ver_chk}" ];
+then
+        # Restart 18.04 GUI
+		killall -3 gnome-shell
+		
+else
+		# Restart 16.04/Earlier GUI
+		service lightdm restart
+fi
 
 
