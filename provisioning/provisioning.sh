@@ -355,19 +355,8 @@ then
 		gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/warty-final-ubuntu.png
 fi
 
-##########################################################################################
-###########################             Reset Login Screen               #################
-##########################################################################################
-echo " ********************************************************************************"
-echo " *************           Configuring the login screen             ******************"
-echo " ********************************************************************************"
-echo " Please wait..."
-cp /install/fse/login/firstlogin/lightdm.conf /etc/lightdm/
-chown root:root /etc/lightdm/lightdm.conf
-chmod a+x /etc/lightdm/lightdm.conf
 
 #Send to log file
-echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.log
 clear
 echo " ********************************************************************************"
 echo " *************               Configuring GRUB                  ******************"
@@ -377,8 +366,8 @@ apt-get update
 apt-get -f install
 apt-get install grub2-splashimages
 ### Get the grub image from repo
-cd /usr/share/images/grub/
 wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/grub.tga
+cd /usr/share/images/grub/
 chown root:root /usr/share/images/grub/grub.tga
 ###Get Grub file
 cd /etc/default/
@@ -394,6 +383,14 @@ update-grub
 # ver_chk will return as a 0 if the grep is matched
 # If no match, it will return a 1
 
+##########################################################################################
+###########################             Reset Login Screen               #################
+##########################################################################################
+echo " ********************************************************************************"
+echo " *************           Configuring the login screen             ******************"
+echo " ********************************************************************************"
+echo " Please wait..."
+
 if [ "${ver_chk}" ];
 then
 	# Disable autologin for 18.04
@@ -404,9 +401,10 @@ else
 	# Remove autologin version of lightdm
 	rm /etc/lightdm/lightdm.conf
 	# This is the lightdm file without autologin
-	wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
+	wget -O /etc/lightdm/lightdm.conf https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
 	chown root:root /etc/lightdm/lightdm.conf
 	chmod a+x /etc/lightdm/lightdm.conf
+	echo $(date) ${filename} SUCCESS: Final lightdm.conf copied >> /var/log/fse.log
 fi
 
 
