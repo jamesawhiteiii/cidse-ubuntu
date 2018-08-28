@@ -61,6 +61,25 @@ echo " *************************************************************************
 
 hostname $newhost
 
+
+##########################################################################################
+#######################         Add PBIS Client Repo        ##############################
+##########################################################################################
+
+wget -O - http://repo.pbis.beyondtrust.com/apt/RPM-GPG-KEY-pbis|sudo apt-key add - 
+sudo wget -O /etc/apt/sources.list.d/pbiso.list http://repo.pbis.beyondtrust.com/apt/pbiso.list 
+sudo apt-get update
+echo $(date) ${filename} SUCCESS: PBIS-OPEN Repo Added >> /var/log/fse.log
+
+##########################################################################################
+##########################           Install PBIS Client        ##########################
+##########################################################################################
+
+apt-get install pbis-open -y
+echo $(date) ${filename} SUCCESS: PBIS-OPEN Installed >> /var/log/fse.log
+
+
+
 ##########################################################################################
 ##########################################################################################
 echo " **********************************************************************************"
@@ -132,4 +151,4 @@ echo "ACTIVE DIRECTORY BIND COMPLETE"
 echo "Your computer must restart to complete the installation...rebooting in 10 seconds!
 #
 sleep 10
-reboot
+reboot'

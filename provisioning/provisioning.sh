@@ -5,80 +5,62 @@
 # Program name      : provisioning.sh
 # Author            : James White III
 # Contributors
-# Date created      : 07 24 2018
+# Date created      : 08 09 2018
 #
 # Purpose           : Apply department specific configuration to new Ubuntu Clients
 #
 ##########################################################################################
 ##########################################################################################
-##########################################################################################
 clear
+##########################################################################################
+echo " *****************************************************************************"
+echo " *****************************************************************************"
+echo " *********              FSE UBUNTU CLIENT SETUP             ******************"
 echo " ********************************************************************************"
-echo " ********************************************************************************"
-echo " ************              FSE UBUNTU CLIENT SETUP             ******************"
-echo " ********************************************************************************"
+
+# Set the OS version variable
+ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep 18.04)
+
 ##########################################################################################
 #################################     SET HOSTNAME      ##################################
 ##########################################################################################
-
-#Assign existing hostname to $hostn
+echo " *****************************************************************************"
+echo " *********                   SET HOSTNAME                   ******************"
+echo " *****************************************************************************"
+### Assign existing hostname to $hostn
 hostn=$(cat /etc/hostname)
-
-#Display existing hostname
-#echo "The current hostname of this systems is $hostn"
-
-#Ask for new hostname $newhost
-
-echo " ******************************************************************************"
-echo " ******************************************************************************"
+### Display existing hostname
+echo "The current hostname of this systems is $hostn"
+### Ask for new hostname $newhost
+echo " ****************************************************************************"
+echo " ****************************************************************************"
 echo " "
 echo " Please enter the desired hostname for this system: "
 read newhost
-echo " ******************************************************************************"
-echo " ******************************************************************************"
+echo " *****************************************************************************"
+echo " *****************************************************************************"
 #change hostname in /etc/hosts & /etc/hostname
 sed -i "s/$hostn/$newhost/g" /etc/hosts
 sed -i "s/$hostn/$newhost/g" /etc/hostname
 service hostname start
 echo " **********************************************************************************"
 echo " **********************************************************************************"
-#display new hostname
-echo "Your new hostname is $newhost"
-echo " **********************************************************************************"
-echo " **********************************************************************************"
 hostname $newhost
+echo " Hostname has been updated to $newhost"
+
+echo " **********************************************************************************"
+### Write out to log
+echo $(date) ${filename} SUCCESS: Hostname is $newhost >>/var/log/fse.log
 clear
-##########################################################################################
-############################        SET ASU OWNER (ASURITE ID)    ########################
-##########################################################################################
-echo " *******************************************************************************"
-echo " *******************************************************************************"
-echo " "
-echo "                        Who is the owner of this system ?"
-echo " "
-echo "   (Note: The system "owner" is the Faculty member who purchased the device )"
-echo " *******************************************************************************"
-echo " *******************************************************************************"
-echo " "
-read -p "Please enter the owners ASURITE ID, followed by [ENTER]: " fse_owner
-echo  "${fse_owner}" >> /etc/fse.owner
-#Send to log file
-echo $(date) ${filename} SUCCESS: ${fse_owner} owns this system >>/var/log/fse.log
-clear
+#
 ##########################################################################################
 ####################                   CONFIGURE                  ########################
 ####################                 ACTIVE DIRECTORY             ########################
 ##########################################################################################
 ##########################################################################################
-
-##########################################################################################
-####################     	   CONFIGURE PBIS OPEN            ########################
-##########################################################################################
-
 echo " **********************************************************************************"
 echo " **********************************************************************************"
 echo " *************                 **WARNING**                   **********************"
-echo " **********************************************************************************"
 echo " **********************************************************************************"
 echo " *************      ALL NEW SYSTEMS MUST BE PRE-STAGED       **********************"
 echo " *************         WITHIN ACTIVE DIRECTORY               **********************"
@@ -91,19 +73,18 @@ echo " *************************************************************************
 ##############################    Verify AD PreStage    ##################################
 ##########################################################################################
 #Require the technician to verify whether or not the computer has been prestaged in AD. 
-echo " ********************************************************************************"
-echo " ********************************************************************************"
-echo " ************              Active Directory Pre-Stage          ******************"
-echo " ********************************************************************************"
-echo " #"
-echo " #"
+echo " "
+echo "  *******************************************************************************"
+echo "  ************           Active Directory Pre-Stage             *****************"
+echo "  *******************************************************************************"
+echo " "
 read -p "Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?" choice
 case "$choice" in 
   y|Y ) echo "yes";;
-  n|N ) echo "****************************************************************************"
-        echo "****************************************************************************"
-        echo "****************************************************************************"
-        echo "        UBUNTU CLIENT CONFIGURATION CAN NOT BE RUN AT THIS TIME :(          "
+  n|N ) echo "*************************************************************************"
+        echo "*************************************************************************"
+        echo "*************************************************************************"
+        echo "       UBUNTU CLIENT CONFIGURATION CAN NOT BE RUN AT THIS TIME :(          "
         echo "Please pre-stage this system in Active Directory, with the desired hostname"
         echo "****************************************************************************"; return;;
   * ) echo "invalid"; return;;
@@ -116,111 +97,110 @@ clear
 #############################        Join FULTON.AD.ASU.EDU.           ###################
 ##########################################################################################
 echo " ********************************************************************************"
-echo " ********************************************************************************"
 echo " *************            JOINING TO ACTIVE DIRECTORY          ******************"
 echo " ********************************************************************************"
 echo " "
 echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to Active Directory"
-#echo "DOMAIN= FULTON"
+echo "     This is your AD account (example: jwhite40ad)                               "
 domainjoin-cli join fulton.ad.asu.edu 
 #
 #Send to log file
 echo $(date) ${filename} SUCCESS: $(hostname)successfully joined to fulton.ad.asu.edu >> /var/log/fse.log
-
+clear
 ##########################################################################################
 ##########################################################################################
-#############################       Add CIDSE IT to SUDO             ###################
+#############################         Add CIDSE IT to SUDO             ###################
 ##########################################################################################
-# Check if user is in root
-if [[ $EUID -ne 0 ]]; then
-echo "Please run in root"
-exit
-fi
+echo " ********************************************************************************"
+echo " *************             Adding CIDSE IT to SUDO...          ******************"
+echo " ********************************************************************************"
+echo " "
+### Adding CIDSE-IT Security Group to /etc/sudoers
 CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
 cat /etc/sudoers > /etc/sudoers.tmp
 echo "$CidseItGroup" >> /etc/sudoers.tmp
-
+cp /etc/sudoers.tmp /etc/sudoers
+### Write to log
+echo $(date) ${filename} SUCCESS: %FULTON\\\cidse-it add to sudoers >> /var/log/fse.log
+echo "           **********************************************************"
+echo "           #       The CIDSE IT Group has been added to sudoers .   #"
+echo "           **********************************************************"
+clear
 ##########################################################################################
 ##########################################################################################
 #############################       Add Lab Admins to SUDO             ###################
 ##########################################################################################
-
-# Verfiy Ownership and add proper Security Group to sudo
-echo "                        Who is the owner of this system ?"
+echo " ********************************************************************************"
+echo " *************        Adding Owner's Lab Admins to sudo...     ******************"
+echo " ********************************************************************************"
 echo " "
-echo "   (Note: The system "owner" is the Faculty member who purchased the device )"
-echo 'Please enter the ASURITE ID:'
-read -r ASURITE
-ASURITE="%FULTON\\\\\\CIDSE-$ASURITE_Lab-Admins   ALL=(ALL:ALL) ALL"
-
-
-#echo 'The standardd lab admin groupname is: "CIDSE-<professor ASURITEID>_Lab_Admins"'
-#cho 'Example: CIDSE-adoupe1_Lab_Admins'
-#read -r Group
-#Group="%FULTON\\\\\\$Group    ALL=(ALL:ALL) ALL"
-#CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
-# add to the sudo file
-cat /etc/sudoers > /etc/sudoers.tmp
-echo "$ASURITE" >> /etc/sudoers.tmp
-
+###   Verify Ownership and add proper Security Group to sudo
+echo "*********************************************************************************"  
+echo ""
+echo "                        Who is the owner of this system?"
+echo " "
+echo "   (Note: The system "OWNER" is the Faculty member who purchased the device )"
+echo "  Failure to enter the correct owner in this step will cause major issues with   "
+echo "           the settings pushed down by the Systems Administrator.                "
+echo ""
+echo "**********************************************************************************"  
+echo ""
+echo "Please enter the owners ASURITE ID (example: adoupe1, huanliu, sshirva43):"
+read -r owner
+echo "**********************************************************************************"             
+echo ""
+##SetVariables
+owner="$owner"
+Group="%FULTON\\\\\\CIDSE-"$owner"_Lab_Admins    ALL=(ALL:ALL) ALL"
+echo ""
 clear
-echo 'Output of sudoers file'
-echo
-cat /etc/sudoers.tmp
-echo
-echo 'Does the contents of the file look correct? [y/N]'
-read -r answer
-
-if [[ $answer = [yY] ]]; then
+echo " ********************************************************************************"
+echo " *************        Adding Owner's Lab Admins to sudo...     ******************"
+echo " ********************************************************************************"
+echo ""
+read -p "You have indicated that the owner of this system is $owner? Is this correct? (Y)es/(N)o?" choice
+case "$choice" in 
+  y|Y ) echo "yes";;
+  n|N ) echo "****************************************************************************"
+        echo "****************************************************************************"
+        echo "****************************************************************************"
+        echo "        OWNER CONFIGURATION CAN NOT BE COMPLETED AT THIS TIME :(          "
+        echo "    Please verify who owns this system and restart the configuration       "
+        echo "****************************************************************************"; return;;
+  * ) echo "invalid"; return;;
+esac
+echo " **********************************************************************************"
+echo " **********************************************************************************"
+clear
+###
+### add to the sudo file
+echo " ********************************************************************************"
+echo " *************        CONFIGURING OWNERSHIP and SUDO...        ******************"
+echo " ********************************************************************************"
+echo " Please wait..."
+cat /etc/sudoers > /etc/sudoers.tmp
+echo "$Group" >> /etc/sudoers.tmp
 cp /etc/sudoers.tmp /etc/sudoers
+###Write to log
+echo $(date) ${filename} SUCCESS: Owner set to "$ASURITE" >> /var/log/fse.log
+clear
+###
+echo " ********************************************************************************"
+echo " *************                  SUDOERS.TMP                    ******************"
+echo " ********************************************************************************"
+cat /etc/sudoers.tmp
+echo "*********************************************************************************"
+echo "*********************************************************************************"
+echo ""
+echo 'Looking at the lines above, has the correct security group been added to the sudoers file? [Y/N]?'
+read -r answer
+echo "*********************************************************************************"
+if [[ $answer = [yY] ]]; then
+    cp /etc/sudoers.tmp /etc/sudoers && echo "Device Ownership and SUDOERS have been configured" && rm /etc/sudoers.tmp
+    echo $(date) ${filename} SUCCESS: Device Ownership $owner and SUDOERS have been configured >> /var/log/fse.log
 else
-echo 'Not commiting changes. Now exiting'
+echo 'Not committing changes. Exiting Now'
 fi
-rm /etc/sudoers.tmp
-cd /
-
-
-##########################################################################################
-##########################################################################################
-#############################       Configure Sudoers File             ###################
-##########################################################################################
-#cd /tmp
-#wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/scripts/configure_sudoers.sh
-#sh /tmp/configure_sudoers.sh
-
-# Check if user is in root
-#if [[ $EUID -ne 0 ]]; then
-#echo "Please run in root"
-#exit
-#fi
-
-## get the groupname
-#echo 'Please enter the name of the lab admins security group'
-#echo 'The standardd lab admin groupname is: "CIDSE-<professor ASURITEID>_Lab_Admins"'
-#echo 'Example: CIDSE-adoupe1_Lab_Admins'
-#read -r Group
-#Group="%FULTON\\\\\\$Group    ALL=(ALL:ALL) ALL"
-#CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
-
-## add to the sudo file
-#cat /etc/sudoers > /etc/sudoers.tmp
-#echo "$Group" >> /etc/sudoers.tmp
-#echo "$CidseItGroup" >> /etc/sudoers.tmp
-#clear
-#echo 'Output of sudoers file'
-#echo
-#cat /etc/sudoers.tmp
-#echo
-#echo 'Does the contents of the file look correct? [y/N]'
-#read -r answer
-
-#if [[ $answer = [yY] ]]; then
-#cp /etc/sudoers.tmp /etc/sudoers
-#else
-#echo 'Not commiting changes. Now exiting'
-#fi
-#rm /etc/sudoers.tmp
-#cd /
 
 ##########################################################################################
 #############################       Configure Login PBIS-OPEN          ###################
@@ -255,38 +235,8 @@ landscape-config --computer-title $(hostname -f) --script-users nobody,landscape
 #Send to log file
 echo $(date) ${filename} SUCCESS: FSE Landscape Registration Complete >> /var/log/fse.log
 
-##########################################################################################
-###########################             Reset Login Screen               #################
-##########################################################################################
 
-cp /install/fse/login/firstlogin/lightdm.conf /etc/lightdm/
-chown root:root /etc/lightdm/lightdm.conf
-chmod a+x /etc/lightdm/lightdm.conf
 
-#Send to log file
-echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.log
-
-##########################################################################################
-######## 18.04 Systems Only
-##########################################################################################
-#this file will remove autologin
-
-#the lbs-release file has information on the Ubuntu version
-#the first grep returns the line containing the version number
-#the second grep determins if it 18.04
-
-#ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep -q 18.04)
-
-# ver_chk will return as a 0 if the grep is matched
-# If no match, it will return a 1
-
-#if ${ver_chk};
-#then
-#       
-#else
-#        rm /etc/gdm3/custom.conf
-#        mv /etc/gdm3/custom.conf.bak /etc/gdm3/custom.conf
-#fi
 
 ##########################################################################################
 #######################              CLIENT PATCHING                ######################
@@ -300,13 +250,13 @@ echo $(date) ${filename} SUCCESS: Final Login Screen Configured >> /var/log/fse.
 ######################            MOUNT SOURCE FILESHARE	         #####################
 ##########################################################################################
 
-#echo “Installing CIFS-UTILS”
-#apt-get install cifs-utils -y
+echo “Installing CIFS-UTILS”
+apt-get install cifs-utils -y
 
-#echo “Making New Source Directory”
-#mkdir /mnt/source/
+echo “Making New Source Directory”
+mkdir /mnt/source/
 
-#echo “Mounting CIDSE-FS-01”
+echo “Mounting CIDSE-FS-01”
 mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
 #/
 ##########################################################################################
@@ -399,17 +349,64 @@ rm /usr/share/backgrounds/warty-final-ubuntu.png
 wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/warty-final-ubuntu.png
 chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
 chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
+if [ "${ver_chk}" ];
+then
+        # Set the 18.04 background (this may need to be in the firstlogin script)
+		gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/warty-final-ubuntu.png
+fi
 
+
+#Send to log file
+clear
+echo " ********************************************************************************"
+echo " *************               Configuring GRUB                  ******************"
+echo " ********************************************************************************"
+### Install grub2-splashimages
+apt-get update
+apt-get -f install
+apt-get install grub2-splashimages
+### Get the grub image from repo
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/background/grub.tga
+cd /usr/share/images/grub/
+chown root:root /usr/share/images/grub/grub.tga
+###Get Grub file
+cd /etc/default/
+mv /etc/default/grub /etc/default/grub.bak
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub
+#mv /etc/default/grub.cfg /etc/default/grub
+update-grub
 
 ##########################################################################################
-############################   Set Login Configuration     ###############################
+############################   Reset Login Configuration     ###############################
 # Lightdm.conf file is set to allow TECHS to auto login
-echo “Copying Lightdm.conf”
-cd /etc/lightdm/
-rm /etc/lightdm/lightdm.conf
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
-chown root:root /etc/lightdm/lightdm.conf
-chmod a+x /etc/lightdm/lightdm.conf
+
+# ver_chk will return as a 0 if the grep is matched
+# If no match, it will return a 1
+
+##########################################################################################
+###########################             Reset Login Screen               #################
+##########################################################################################
+echo " ********************************************************************************"
+echo " *************           Configuring the login screen             ******************"
+echo " ********************************************************************************"
+echo " Please wait..."
+
+if [ "${ver_chk}" ];
+then
+	# Disable autologin for 18.04
+	rm /etc/gdm3/custom.conf
+	mv /etc/gdm3/custom.conf.bak /etc/gdm3/custom.conf
+else
+	echo “Copying Lightdm.conf”
+	# Remove autologin version of lightdm
+	rm /etc/lightdm/lightdm.conf
+	# This is the lightdm file without autologin
+	wget -O /etc/lightdm/lightdm.conf https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/lightdm.conf
+	chown root:root /etc/lightdm/lightdm.conf
+	chmod a+x /etc/lightdm/lightdm.conf
+	echo $(date) ${filename} SUCCESS: Final lightdm.conf copied >> /var/log/fse.log
+fi
+
 
 #################################################################################################
 #################################################################################################
@@ -424,7 +421,17 @@ rm /etc/rc.local
 #
 echo "provisioning.sh complete"
 
-sleep 30
-#reboot
+# Restart GUI environment for 18.04/16.04 and earlier
+# ver_chk will return empty/false if not 18.04
+
+if [ "${ver_chk}" ];
+then
+        # Restart 18.04 GUI
+		killall -3 gnome-shell
+		
+else
+		# Restart 16.04/Earlier GUI
+		service lightdm restart
+fi
 
 
