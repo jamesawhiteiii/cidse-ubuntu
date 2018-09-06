@@ -90,18 +90,17 @@ This script runs after it downloaded by firstboot.sh. It runs noninteractively b
 - Setup techs autologin
 - Install and prepare the Landscape client
 - Install openssh-server
-- Copy firstlogin.sh and set it to autostart on login
 - Set the FSE pitchfork/provisioning background
-- WGET and setup firstlogin_live.sh
+- WGET and setup autologin for firstlogin_live.sh
 - Reload the GUI to initiate the autologin
-- Remove itself and its autostart
+- Remove itself and its the firstboot.sh autostart in /etc/rc.local
 
 #### /provisioning/firstlogin_live.sh
 
 This script will run interactively on every login until it is removed. Its purpose is currently to:
 
-- Set the pitchfork/provisioning background for 18.04+
-- Set the hostname
+- Set the FSE pitchfork/provisioning background for 18.04+
+- Ask user for the hostname
 - Register to Landscape
 - Disable autologin and configure login screen
 - Remove firstlogin_live.sh
