@@ -17,7 +17,7 @@
 #####################################################################
 
 # Set if this script is in 'devtest' branch or 'master' branch
-fse_env=devtest
+fse_env=$(cat /install/fse/fse_env)
 
 # Set variable with filename for use in logging
 filename=$(echo $0 | rev | cut -d'/' -f1 | rev)
@@ -29,6 +29,27 @@ ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep 18.04)
 # the lsb-release file has information on the Ubuntu version
 # the first grep returns the line containing the version number
 # the second grep determins if it 18.04
+
+#####################################################################
+# Check for root privileges                                         #
+#####################################################################
+if [ "$(id -u)" != "0" ]
+then
+echo "This script must be run with root privileges"
+#Send to log file
+echo $(date) ${filename} ERROR: Unable to continue without root privileges, log out and back in to restart the setup process >> /var/log/fse.log
+exit 1
+fi
+
+######################################################################
+# Set background for 18.04+                                          #
+######################################################################
+# Gnome in 18.04+ doesn't allow background to be set during firstboot script
+if [ "${ver_chk}" ];
+then
+        # Set the 18.04 pitchfork/provisioning background
+		gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/warty-final-ubuntu.png
+fi
 
 #####################################################################
 # Display a banner                                                  #
@@ -122,6 +143,7 @@ fi
 rm /tmp/firstlogin_live.sh
 rm /tmp/firstlogin.sh
 rm /home/techs/.config/autostart/provisioning.desktop
+mv /home/techs/.config/autostart/provisioning.desktop.bak rm /home/techs/.config/autostart/provisioning.desktop 
 
 #####################################################################
 # Log completion                                                    #

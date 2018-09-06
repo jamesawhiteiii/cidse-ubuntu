@@ -17,7 +17,7 @@
 #####################################################################
 
 # Set if this script is in 'devtest' branch or 'master' branch
-fse_env=devtest
+fse_env=$(cat /install/fse/fse_env)
 
 # Set variable with filename for use in logging
 filename=$(echo $0 | rev | cut -d'/' -f1 | rev)

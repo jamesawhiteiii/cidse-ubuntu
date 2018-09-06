@@ -20,7 +20,7 @@
 #####################################################################
 
 # Set if this script is in 'devtest' branch or 'master' branch
-fse_env=devtest
+fse_env=$(cat /install/fse/fse_env)
 
 # Set variable with filename for use in logging
 filename=$(echo $0 | rev | cut -d'/' -f1 | rev)
@@ -33,6 +33,18 @@ ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep 18.04)
 # the first grep returns the line containing the version number
 # the second grep determins if it 18.04
 
+#####################################################################
+# Set FSE pitchfork/provisioning background                         #
+#####################################################################
+# Note: This won't work on 18.04+
+# There is a portion of firstlogin that sets the wallpaper for 18.04
+
+rm /usr/share/backgrounds/warty-final-ubuntu.png
+cp /install/fse/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
+chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
+chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
+
+echo $(date) ${filename} SUCCESS: Set FSE Deployment Background for 16.04 and earlier  >> /var/log/fse.log
 
 #####################################################################
 # Set up auto login for techs account                               #
@@ -92,11 +104,14 @@ apt-get install openssh-server -y
 echo $(date) ${filename} SUCCESS: Open SSH Server installed >> /var/log/fse.log
 
 #####################################################################
-# Copy and set up firstlogin.sh autostart                           #
+# Wget and set up firstlogin_live.sh autostart                      #
 #####################################################################
-# Copy firstlogin.sh to tmp
-cp /install/fse/autologin/firstlogin.sh /tmp/firstlogin.sh
-echo $(date) ${filename} SUCCESS: firstlogin.sh copied >> /var/log/fse.log
+#Send to log file
+echo $(date) ${filename} Beginning WGET of firstlogin_live.sh >> /var/log/fse.log
+
+# Get lastest firstlogin_live script from repo and execute
+wget -O /tmp/firstlogin_live.sh https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/${fse_env}/provisioning/firstlogin_live.sh
+chmod u+x /tmp/firstlogin_live.sh
 
 # Backup the original file
 mv /home/techs/.config/autostart/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop.bak
@@ -104,22 +119,7 @@ mv /home/techs/.config/autostart/provisioning.desktop /home/techs/.config/autost
 # Copy FSE version with firstlogin.sh autostart
 cp -a /install/fse/autologin/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop
 
-echo $(date) ${filename} SUCCESS: firstlogin.sh autostart setup via /home/techs/.config/autostart/provisioning.desktop >> /var/log/fse.log
-
-
-#####################################################################
-# Set FSE pitchfork/provisioning background                         #
-#####################################################################
-# Note: This won't work on 18.04+
-# There is a portion of the static firstlogin.sh that sets the 
-# wallpaper for 18.04
-
-rm /usr/share/backgrounds/warty-final-ubuntu.png
-cp /install/fse/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
-chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
-chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
-
-echo $(date) ${filename} SUCCESS: Set FSE Deployment Background for 16.04 and earlier  >> /var/log/fse.log
+echo $(date) ${filename} SUCCESS: firstlogin_live.sh autostart setup via /home/techs/.config/autostart/provisioning.desktop >> /var/log/fse.log
 
 #####################################################################
 # Restart GUI to proceed to auto login and continue                 #
