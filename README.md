@@ -113,4 +113,4 @@ Other key files that aren't directly involved in the provisioning process and th
 
 #### /deploy/preseed/install/fse/fse_env
 
-This file contains the text string of the Git branch you want to pull files from. This would allow you to change a USB drive to pull files from either a dev or testing branch versus the live 'master' production branch. All the scripts listed above will look to this file to make a decision on where to wget live file from.
+This file contains the text string of the Git branch you want to pull files from. This would allow you to change a USB drive to pull files from either a dev or testing branch versus the live 'master' production branch. All the scripts listed above will look to this file to make a decision on where to wget live files from.
