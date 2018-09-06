@@ -113,7 +113,10 @@ echo $(date) ${filename} Beginning WGET of firstlogin_live.sh >> /var/log/fse.lo
 wget -O /tmp/firstlogin_live.sh https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/${fse_env}/provisioning/firstlogin_live.sh
 chmod u+x /tmp/firstlogin_live.sh
 
-# Backup the original file
+# Create the autostart directory if it doesn't exists
+mkdir /home/techs/.config/autostart
+
+# Backup the original file (if it exists)
 mv /home/techs/.config/autostart/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop.bak
 
 # Copy FSE version with firstlogin.sh autostart
