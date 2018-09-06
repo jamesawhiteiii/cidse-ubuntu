@@ -38,3 +38,4 @@ GRUB_COLOR_NORMAL="light-gray/black"
 GRUB_COLOR_HIGHLIGHT="yellow/light-gray"
 
 GRUB_BACKGROUND=/usr/share/images/grub/grub.tga
+

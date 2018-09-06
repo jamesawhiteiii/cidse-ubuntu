@@ -162,4 +162,3 @@ else
 		# Restart 16.04/Earlier GUI
 		service lightdm restart
 fi
-
