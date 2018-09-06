@@ -8,6 +8,7 @@
 #
 #This does the following:
 #####       * Initial variable setup
+#####		* [18.04+] Set the pitchfork/provisioning background
 #####		* Ask user for new hostname
 #####		* Register with Landscape
 #####		* Disable autologin and configure the login screen
@@ -98,10 +99,10 @@ clear
 #####################################################################
 # Register with Landscape                                           #
 #####################################################################
-echo " ********************************************************************************"
-echo "*************           REGISTERING WITH LANDSCAPE           ********************"
-echo "*************           landscape.fulton.ad.asu.edu          ********************"
-echo "*********************************************************************************"
+echo " ******************************************************************************"
+echo "*************           REGISTERING WITH LANDSCAPE           ******************"
+echo "*************           landscape.fulton.ad.asu.edu          ******************"
+echo "*******************************************************************************"
 
 echo “Beginning Landscape Configuration”
 landscape-config --computer-title $(hostname -f) --script-users nobody,landscape,root --silent

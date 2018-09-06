@@ -53,8 +53,8 @@ At a high level the process is:
 | Step          | Description                                     | Key Action                       |
 | ------------- | ----------------------------------------------- | -------------------------------- |
 | Boot from USB | Display FSE Preseed options via custom grub.cfg | Automated OS install             |
-| First bootup  | Run .firstboot.sh                               | wget and run firstboot_live.sh   |
-| First login   | Run .firstlogin.sh                              | wget and run firstlogin_live.sh  |
+| First bootup  | Run .firstboot.sh, run firstboot_live.sh        | Wget firstboot_live.sh and firstlogin_live.sh   |
+| First login   | Run .firstlogin_live.sh                         | Final provisioning steps         |
 
 
 Should you encounter errors during the process, always check the logs first at /var/log/fse.log.
@@ -67,23 +67,23 @@ will launch again.
 ## Files and Brief Descriptions
 
 
-Files, their descriptions and purpose are listed below in the order they occur during the process. All parts of the process write logs to /var/log/fse.log
+Files, their descriptions and purpose are listed below in the order they occur during the process. All parts of the process write logs to /var/log/fse.log.
 
 
-#### fse-*.seed files
+#### /deploy/preseed/fse-*.seed files
 
 These are the preseed files themselves. They represent the answers to the questions usually presented by the GUI
 installer. Things such as partitioning, user creation, third-party packages, and timezone are all set in the preseed
 file. Upon completion the preseed sets up log files at /var/log/fse.log.
 
 
-#### .firstboot.sh
+#### /deploy/preseed/.firstboot.sh
 This script is set to run after the installation restarts the computer. It runs noninteractively before login.
 It will place logs in /var/log/fse.log. Its purpose is currently to: 
 - Check for internet connectivity
 - WGET and run the firstboot_live.sh
 
-#### firstboot_live.sh
+#### /provisioning/firstboot_live.sh
 
 This script runs after it downloaded by firstboot.sh. It runs noninteractively before login. Its purpose is currently to: 
 
@@ -92,22 +92,25 @@ This script runs after it downloaded by firstboot.sh. It runs noninteractively b
 - Install openssh-server
 - Copy firstlogin.sh and set it to autostart on login
 - Set the FSE pitchfork/provisioning background
+- WGET and setup firstlogin_live.sh
 - Reload the GUI to initiate the autologin
 - Remove itself and its autostart
 
-#### firstlogin.sh
+#### /provisioning/firstlogin_live.sh
 
 This script will run interactively on every login until it is removed. Its purpose is currently to:
 
 - Set the pitchfork/provisioning background for 18.04+
-- WGET and run firstlogin_live.sh
-
-#### firstlogin_live.sh
-
-This is run by firstlogin.sh. Its purpose is currently to:
-
 - Set the hostname
 - Register to Landscape
-- Disable login and configure login screen
-- Remove firstlogin.sh and firstlogin_live.sh
+- Disable autologin and configure login screen
+- Remove firstlogin_live.sh
 - Reload GUI to complete the process
+
+## Other Files of Note
+
+Other key files that aren't directly involved in the provisioning process and their purpose.
+
+#### /deploy/preseed/install/fse/fse_env
+
+This file contains the text string of the Git branch you want to pull files from. This would allow you to change a USB drive to pull files from either a dev or testing branch versus the live 'master' production branch. All the scripts listed above will look to this file to make a decision on where to wget live file from.

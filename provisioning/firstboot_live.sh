@@ -11,7 +11,7 @@
 #####		* Setup 'techs' automatic login
 #####		* Install and prepare the Landscape client
 #####		* Install openssh-server
-#####		* Copy firstlogin.sh and set for autostart on login
+#####		* Wget firstlogin_live.sh and set for autostart on login
 #####		* Set the FSE pitchfork/provisioning background
 #####		* Reload the GUI which then will proceed to autologin
 
