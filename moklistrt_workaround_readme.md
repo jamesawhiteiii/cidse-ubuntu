@@ -13,3 +13,8 @@ MokListRT error occurs due to older versions of BIOS where EFI isn't fully imple
 11. Press OK two times
 12. Select 'Apply'
 13. Exit
+14. If you get missing vmzlinuz or initrd
+          a. Open the USB and navigate to /casper/
+          b. Copy vmzlinuz and initrd
+          c. Paste them in same directory and rename them as follows
+          d. vmzlinuz.efi and initrd.lz

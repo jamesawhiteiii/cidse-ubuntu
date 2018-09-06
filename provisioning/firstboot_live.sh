@@ -1,14 +1,26 @@
 #!/bin/bash -i
 #
 # Author:         James White & Jon Anderson
-# Name:           .firstboot_live.sh
+# Name:           firstboot_live.sh
 # Purpose:        FSE Ubuntu Client Configuration - Live Downloaded First Boot Script
 # Notes:          Check /var/log/fse.log if you encounter any errors
 #				  This script is called by firstboot.sh via WGET
+#
+#This does the following:
+#####       * Initial variable setup
+#####		* Setup 'techs' automatic login
+#####		* Install and prepare the Landscape client
+#####		* Install openssh-server
+#####		* Copy firstlogin.sh and set for autostart on login
+#####		* Set the FSE pitchfork/provisioning background
+#####		* Reload the GUI which then will proceed to autologin
 
 #####################################################################
 # Initial variable setup                                            #
 #####################################################################
+
+# Set if this script is in 'devtest' branch or 'master' branch
+fse_env=devtest
 
 # Set variable with filename for use in logging
 filename=$(echo $0 | rev | cut -d'/' -f1 | rev)
@@ -21,6 +33,7 @@ ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep 18.04)
 # the first grep returns the line containing the version number
 # the second grep determins if it 18.04
 
+
 #####################################################################
 # Set up auto login for techs account                               #
 #####################################################################
@@ -28,23 +41,24 @@ ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep 18.04)
 # Then run appropriate commands for that version
 if [ "${ver_chk}" ];
 then
-        echo $(date) ${filename} LOG: Version is 18.04, performing 18.04 specific tasks >> /var/log/fse.log
+        echo $(date) ${filename} LOG: Version is 18.04, performing 18.04 autologin setup >> /var/log/fse.log
         # Remove Gnome welcome popup
 		sudo apt-get remove gnome-initial-setup -y
 		# Setup autologin for 'techs' account
         mv /etc/gdm3/custom.conf /etc/gdm3/custom.conf.bak
-        cp /install/fse/scripts/1804/custom.conf /etc/gdm3/custom.conf
+        cp /install/fse/autologin/custom.conf /etc/gdm3/custom.conf
         chown root:root /etc/gdm3/custom.conf
         chmod 644 /etc/gdm3/custom.conf
 		echo $(date) ${filename} SUCCESS: 18.04 login configured >> /var/log/fse.log
 		
 else
-		echo $(date) ${filename} LOG: Version is earlier than 18.04, performing 16.04 & earlier tasks >> /var/log/fse.log
+		echo $(date) ${filename} LOG: Version is earlier than 18.04, performing 16.04 autologin setup >> /var/log/fse.log
 		### Sets the LightDm to auto login
 		### 14.04 and 16.04 System Only
-		cp /install/fse/login/lightdm.conf /etc/lightdm/
+		rm /etc/lightdm/lightdm.conf
+		cp /install/fse/autologin/lightdm.conf /etc/lightdm/
 		chown root:root /etc/lightdm/lightdm.conf
-		chmod a+x /etc/lightdm/lightdm.conf
+		chmod 644 /etc/lightdm/lightdm.conf
 		echo $(date) ${filename} SUCCESS: 16.04 login configured >> /var/log/fse.log
 fi
 
@@ -81,14 +95,14 @@ echo $(date) ${filename} SUCCESS: Open SSH Server installed >> /var/log/fse.log
 # Copy and set up firstlogin.sh autostart                           #
 #####################################################################
 # Copy firstlogin.sh to tmp
-cp /install/fse/scripts/firstlogin.sh /tmp/firstlogin.sh
+cp /install/fse/autologin/firstlogin.sh /tmp/firstlogin.sh
 echo $(date) ${filename} SUCCESS: firstlogin.sh copied >> /var/log/fse.log
 
 # Backup the original file
 mv /home/techs/.config/autostart/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop.bak
 
 # Copy FSE version with firstlogin.sh autostart
-cp -a /install/fse/profiles/techs/.config/autostart/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop
+cp -a /install/fse/autologin/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop
 
 echo $(date) ${filename} SUCCESS: firstlogin.sh autostart setup via /home/techs/.config/autostart/provisioning.desktop >> /var/log/fse.log
 
@@ -96,13 +110,16 @@ echo $(date) ${filename} SUCCESS: firstlogin.sh autostart setup via /home/techs/
 #####################################################################
 # Set FSE pitchfork/provisioning background                         #
 #####################################################################
+# Note: This won't work on 18.04+
+# There is a portion of the static firstlogin.sh that sets the 
+# wallpaper for 18.04
 
 rm /usr/share/backgrounds/warty-final-ubuntu.png
 cp /install/fse/backgrounds/warty-final-ubuntu.png /usr/share/backgrounds/
 chown root:root /usr/share/backgrounds/warty-final-ubuntu.png
 chmod 744 /usr/share/backgrounds/warty-final-ubuntu.png
 
-echo $(date) ${filename} SUCCESS: Set FSE Deployment Background  >> /var/log/fse.log
+echo $(date) ${filename} SUCCESS: Set FSE Deployment Background for 16.04 and earlier  >> /var/log/fse.log
 
 #####################################################################
 # Restart GUI to proceed to auto login and continue                 #
@@ -117,3 +134,11 @@ else
 		# Restart 16.04/Earlier GUI
 		service lightdm restart
 fi
+
+#####################################################################
+# Remove this script and the autostart for it                       #
+#####################################################################
+
+rm /etc/rc.local
+rm /tmp/firstboot_live.sh
+echo $(date) ${filename} SUCCESS: ${filename} finished, removed and disabled from autostart  >> /var/log/fse.log

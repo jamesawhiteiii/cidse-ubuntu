@@ -50,20 +50,11 @@ first hard drive of any existing data. Before you launch a preseeded boot option
 
 At a high level the process is:
 
-| Step          | Description                                     |
-| ------------- | ----------------------------------------------- |
-| Boot from USB | Display FSE Preseed options via custom grub.cfg --> Automated OS install |
-| First bootup  | Run .firstboot.sh --> wget and run firstboot_live.sh    |
-| First login   | Run .firstlogin.sh --> wget and run firstlogin_live.sh  |
-
-# 
-
-1. Boot machine, which will load the menu options from the modified grub.cfg
-2. Install OS based on selected option and respective preseed file
-3. Restart after install completes
-4. Run .firstboot.sh which performs a wget to download firstboot_live.sh
-5. Reload the GUI which will autologin
-6. Logs in and runs firstlogin.sh to wget firstlogin_live.sh
+| Step          | Description                                     | Key Action                       |
+| ------------- | ----------------------------------------------- | -------------------------------- |
+| Boot from USB | Display FSE Preseed options via custom grub.cfg | Automated OS install             |
+| First bootup  | Run .firstboot.sh                               | wget and run firstboot_live.sh   |
+| First login   | Run .firstlogin.sh                              | wget and run firstlogin_live.sh  |
 
 
 Should you encounter errors during the process, always check the logs first at /var/log/fse.log.
@@ -76,50 +67,47 @@ will launch again.
 ## Files and Brief Descriptions
 
 
+Files, their descriptions and purpose are listed below in the order they occur during the process. All parts of the process write logs to /var/log/fse.log
+
+
 #### fse-*.seed files
 
 These are the preseed files themselves. They represent the answers to the questions usually presented by the GUI
 installer. Things such as partitioning, user creation, third-party packages, and timezone are all set in the preseed
 file. Upon completion the preseed sets up log files at /var/log/fse.log.
 
-#### .firstboot.sh
 
+#### .firstboot.sh
 This script is set to run after the installation restarts the computer. It runs noninteractively before login.
 It will place logs in /var/log/fse.log. Its purpose is currently to: 
+- Check for internet connectivity
+- WGET and run the firstboot_live.sh
 
-- Verify network connectivity before proceeding (will exit without it)
-- Patch avahi (prevents error message on login)
-- Copy the local admin (techs) user profile
-- Copy the Landscape client files
-- Setup the PBIS repository (PBIS is for binding to Active Directory)
-- Perform an apt-get update and apt-get upgrade
-- Install openssh-server, landscape-client, pbis-open
-- Setup lightdm to autologin to the techs account
-- Set up the firstlogin.sh script
-- Change the background to the pitchfork
-- Restart lightdm which will then autologin
-- Remove itself if the above steps succeed
+#### firstboot_live.sh
+
+This script runs after it downloaded by firstboot.sh. It runs noninteractively before login. Its purpose is currently to: 
+
+- Setup techs autologin
+- Install and prepare the Landscape client
+- Install openssh-server
+- Copy firstlogin.sh and set it to autostart on login
+- Set the FSE pitchfork/provisioning background
+- Reload the GUI to initiate the autologin
+- Remove itself and its autostart
 
 #### firstlogin.sh
 
-This script will run interactively on every login until it is removed. Successful completion of all its steps
-will lead to the script removing itself. Its purpose is currently to:
+This script will run interactively on every login until it is removed. Its purpose is currently to:
 
-- Verify network connectivity before proceeding (will exit without it)
-- Prompt for techs sudo password
-- Prompt for machine hostname
-- Prompt for Fulton credentials to bind to Active Directory
-- Attempt to join the Landscape server
-- Remove itself and disable autologin if the above steps succeed
+- Set the pitchfork/provisioning background for 18.04+
+- WGET and run firstlogin_live.sh
 
+#### firstlogin_live.sh
 
-#### install Folder
+This is run by firstlogin.sh. Its purpose is currently to:
 
-Contains various resources for the installation process:
-
-- Pitchfork background
-- Landscape client files
-- Lightdm.conf (for techs autologin)
-- Techs profile/home directory
-- .firstboot.sh script file
-- .firstlogin.sh script file
+- Set the hostname
+- Register to Landscape
+- Disable login and configure login screen
+- Remove firstlogin.sh and firstlogin_live.sh
+- Reload GUI to complete the process
