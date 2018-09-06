@@ -4,9 +4,20 @@ This repository contains the various files involved in creating an automatic Ubu
 FSE environment. Copying the respective files in this repository to their prescribed locations on an Ubuntu installation
 USB or ISO will allow you to create an automatic installation. 
 
+
+#### Getting around this repository
+
+Each top level folder houses different scripts or other resources, below is a helpful guide to know where to look
+
+- deploy/ -- Base OS installation automation (Preseed, grub.cfg, firstboot.sh)
+- provisioning/ -- Ubuntu basic configuration (firstboot_live and firstlogin_live scripts, backgrounds)
+- scripts/ -- Utilities for FSE IT staff to run
+- software/ -- Software for FSE IT staff to install
+
 ## Getting Started
 
 The easiest way to get started is using these files is by placing them on an already created Ubuntu installation USB drive.
+It is recommended you create your USB drive with Rufus or a similar utility that leaves R/W access to the drive when complete.
 Modifying and recreating an ISO is a more involved process and covered in a different document.
 
 ### Prerequisites
@@ -39,11 +50,20 @@ first hard drive of any existing data. Before you launch a preseeded boot option
 
 At a high level the process is:
 
-1. Boot machine, load the menu options from grub.cfg
+| Step          | Description                                     |
+| ------------- | ----------------------------------------------- |
+| Boot from USB | Display FSE Preseed options via custom grub.cfg --> Automated OS install |
+| First bootup  | Run .firstboot.sh --> wget and run firstboot_live.sh    |
+| First login   | Run .firstlogin.sh --> wget and run firstlogin_live.sh  |
+
+# 
+
+1. Boot machine, which will load the menu options from the modified grub.cfg
 2. Install OS based on selected option and respective preseed file
 3. Restart after install completes
-4. Run firstboot.sh silently
-5. Autologin and run firstlogin.sh interactively
+4. Run .firstboot.sh which performs a wget to download firstboot_live.sh
+5. Reload the GUI which will autologin
+6. Logs in and runs firstlogin.sh to wget firstlogin_live.sh
 
 
 Should you encounter errors during the process, always check the logs first at /var/log/fse.log.
@@ -56,14 +76,13 @@ will launch again.
 ## Files and Brief Descriptions
 
 
-#### fse.seed and fse-nvme.seed
+#### fse-*.seed files
 
 These are the preseed files themselves. They represent the answers to the questions usually presented by the GUI
 installer. Things such as partitioning, user creation, third-party packages, and timezone are all set in the preseed
-file. These two files contain all the same answers however one targets the first SATA device, and one targets the first NVMe
-device. Upon completion the preseed sets up log files at /var/log/fse.log.
+file. Upon completion the preseed sets up log files at /var/log/fse.log.
 
-#### firstboot.sh
+#### .firstboot.sh
 
 This script is set to run after the installation restarts the computer. It runs noninteractively before login.
 It will place logs in /var/log/fse.log. Its purpose is currently to: 
@@ -102,4 +121,5 @@ Contains various resources for the installation process:
 - Landscape client files
 - Lightdm.conf (for techs autologin)
 - Techs profile/home directory
-- firstlogin.sh script file
+- .firstboot.sh script file
+- .firstlogin.sh script file
