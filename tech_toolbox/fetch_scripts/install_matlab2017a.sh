@@ -41,7 +41,6 @@ cd /tmp/
 
 wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/software/matlab2017a.sh
 
-
 ##########################################################################
 # SET PERMISSIONS
 ##########################################################################
