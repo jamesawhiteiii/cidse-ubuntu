@@ -20,20 +20,5 @@ echo “Running MATLAB INSTALLER”
 sh /mnt/source/Apps/Mathworks/Matlab/Linux/2017a/install -inputFile /mnt/source/Apps/Mathworks/Matlab/Linux/2017a/installer_input.txt
 
 echo “Creating Symbolic Links for Easy Launch”
-ln -s /opt/Matlab/Ra/bin/matlab /usr/local/bin/matlab
-
-################################################################################
-#######################.         Make CIDSE IT            ######################
-################################################################################
-
-
-################################################################################
-#######################.  Matlab Installer confirmation   ######################
-################################################################################
-
-
-chown -R techs /cidseit/
-touch /cidseit/matlab2017a.sh
-
-
+ln -s /opt/Matlab/R2017a/bin/matlab /usr/local/bin/matlab
 

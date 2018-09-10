@@ -22,19 +22,5 @@ sh /mnt/source/Apps/Mathworks/Matlab/Linux/2018a/install -inputFile /mnt/source/
 echo “Creating Symbolic Links for Easy Launch”
 ln -s /opt/Matlab/R2018a/bin/matlab /usr/local/bin/matlab
 
-################################################################################
-#######################.         Make CIDSE IT            ######################
-################################################################################
-mkdir /cidseit
-
-
-################################################################################
-#######################.  Matlab Installer confirmation   ######################
-################################################################################
-
-
-chown -R techs /cidseit/
-touch /cidseit/matlab2018a.sh
-
 
 
