@@ -39,14 +39,14 @@ cd /tmp/
 # DOWNLOAD LIVE INSTALLER FILE FORM GITHUB REPO
 ##########################################################################
 
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/software/install_matlab2017a.sh
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/software/matlab2017a.sh
 
 
 ##########################################################################
 # SET PERMISSIONS
 ##########################################################################
 
-chmod u+x /tmp/matlab2018a.sh
+chmod u+x /tmp/matlab2017a.sh
 
 ##########################################################################
 # RUN LIVE INSTALLER
