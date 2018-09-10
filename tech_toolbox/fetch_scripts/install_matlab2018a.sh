@@ -52,5 +52,5 @@ chmod u+x /tmp/matlab2018a.sh
 # RUN LIVE INSTALLER
 ##########################################################################
 
-bash /tmp/install_matlab2018a.sh --verbose
+bash /tmp/matlab2018a.sh --verbose
 '
