@@ -11,11 +11,13 @@
 #                        1. Enter the commands where it tells you  and save it as a new file.
 #                        2. Done
 #
-#**********************************************************************;
-echo "This script will deploy MATLAB R2018a to the intended host system"
+##########################################################################
+
+echo "This script will deploy MATLAB R2018a to the intended host system."
+echo "    Please enter the hostname you would like to deploy MALTLAB "
 
 #### Get Host Name ####
-echo 'enter hostname in "enXXXXXXXl" format'
+echo '(enter hostname in "enXXXXXXXl" format)'
 read HOST
 HOST='techs@'$HOST'.cidse.dhcp.asu.edu'
 
