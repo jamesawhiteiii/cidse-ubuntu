@@ -48,5 +48,5 @@ chmod u+x /tmp/vmware14.1.2.sh
 # RUN LIVE INSTALLER
 ##########################################################################
 
-bash /tmp/install_vmware14.1.2.sh --verbose
+bash /tmp/vmware14.1.2.sh --verbose
 '
