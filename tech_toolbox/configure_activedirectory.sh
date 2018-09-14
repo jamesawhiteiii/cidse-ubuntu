@@ -1,7 +1,7 @@
 #######################################################################
 # Project           : FSE.CIDSE-Ubuntu
 #
-# Program name      : configure_activedirectory.sh
+# Program name      : configure_ad.sh
 # Author            : James White III
 #
 # Date created      : July 23, 2018
