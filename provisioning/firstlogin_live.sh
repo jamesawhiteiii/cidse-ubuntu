@@ -97,6 +97,72 @@ echo $(date) ${filename} SUCCESS: Hostname is $newhost >>/var/log/fse.log
 
 clear
 #####################################################################
+# Join to AD                                                        #
+#####################################################################
+echo " **********************************************************************************"
+echo " **********************************************************************************"
+echo " *************                 **WARNING**                   **********************"
+echo " **********************************************************************************"
+echo " *************      ALL NEW SYSTEMS MUST BE PRE-STAGED       **********************"
+echo " *************         WITHIN ACTIVE DIRECTORY               **********************"
+echo " **********************************************************************************"
+echo " *************         PLEASE VERIFY THAT THE DEVICE         **********************"
+echo " *************    IS IN THE PROPER OU BEFORE PROCEEDING      **********************"
+echo " **********************************************************************************"
+
+#Require the technician to verify whether or not the computer has been prestaged in AD. 
+echo " "
+echo "  *******************************************************************************"
+echo "  ************           Active Directory Pre-Stage             *****************"
+echo "  *******************************************************************************"
+echo " "
+read -p "Has this computer already been pre-staged in Active Directory? (Y)es/(N)o?" choice
+case "$choice" in 
+  y|Y ) echo "yes";;
+  n|N ) echo "*************************************************************************"
+        echo "*************************************************************************"
+        echo "*************************************************************************"
+        echo "       UBUNTU CLIENT CONFIGURATION CAN NOT BE RUN AT THIS TIME :(          "
+        echo "Please pre-stage this system in Active Directory, with the desired hostname"
+        echo "****************************************************************************"; return;;
+  * ) echo "invalid"; return;;
+esac
+echo " **********************************************************************************"
+echo " **********************************************************************************"
+
+clear
+echo " ********************************************************************************"
+echo " *************            JOINING TO ACTIVE DIRECTORY          ******************"
+echo " ********************************************************************************"
+echo " "
+echo "Please enter your Fulton AD Domain Credentials in order to bind this computer to Active Directory"
+echo "     This is your AD account (example: jwhite40ad)                               "
+domainjoin-cli join fulton.ad.asu.edu 
+
+#Send to log file
+echo $(date) ${filename} SUCCESS: $(hostname) successfully joined to fulton.ad.asu.edu >> /var/log/fse.log
+clear
+##########################################################################################
+##########################################################################################
+#############################         Add CIDSE IT to SUDO             ###################
+##########################################################################################
+echo " ********************************************************************************"
+echo " *************             Adding CIDSE IT to SUDO...          ******************"
+echo " ********************************************************************************"
+echo " "
+### Adding CIDSE-IT Security Group to /etc/sudoers
+CidseItGroup="%FULTON\\\cidse-it    ALL=(ALL:ALL) ALL"
+cat /etc/sudoers > /etc/sudoers.tmp
+echo "$CidseItGroup" >> /etc/sudoers.tmp
+cp /etc/sudoers.tmp /etc/sudoers
+### Write to log
+echo $(date) ${filename} SUCCESS: %FULTON\\\cidse-it add to sudoers >> /var/log/fse.log
+echo "           **********************************************************"
+echo "           #       The CIDSE IT Group has been added to sudoers .   #"
+echo "           **********************************************************"
+
+clear
+#####################################################################
 # Register with Landscape                                           #
 #####################################################################
 echo " ******************************************************************************"
