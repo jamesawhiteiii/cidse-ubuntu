@@ -104,6 +104,18 @@ apt-get install openssh-server -y
 echo $(date) ${filename} SUCCESS: Open SSH Server installed >> /var/log/fse.log
 
 #####################################################################
+# Install pbis-open                                                 #
+#####################################################################
+
+wget -O - http://repo.pbis.beyondtrust.com/apt/RPM-GPG-KEY-pbis | sudo apt-key add - 
+sudo wget -O /etc/apt/sources.list.d/pbiso.list http://repo.pbis.beyondtrust.com/apt/pbiso.list 
+sudo apt-get update
+echo $(date) ${filename} SUCCESS: PBIS-OPEN Repo Added >> /var/log/fse.log
+
+apt-get install pbis-open -y
+echo $(date) ${filename} SUCCESS: PBIS-OPEN Installed >> /var/log/fse.log
+
+#####################################################################
 # Wget and set up firstlogin_live.sh autostart                      #
 #####################################################################
 #Send to log file
