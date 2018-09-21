@@ -1,32 +1,32 @@
-#!/bin/bash
 
 ################################################################################################
 ################################################################################################
 ################################################################################################
-#			                        CIDSE 5th Floor Printers
+#			                Install ALL COMMON PRINTER PRINTERS
 ################################################################################################
 #				                       version 2.0
 ################################################################################################
-#				                 created by: James A. White III
+#				                 created by: James White
 #				                       	CIDSE
 #				                 Arizona State University
-#				                last updated Aug 27, 2018
+#				                last updated Sep 21, 2018
 ################################################################################################
 ################################################################################################
 
 
 ################################################################################################
-###########################         SYSTEM CHECK             ###################################
+#################################   Mount Source Share  ########################################
 ################################################################################################
 
-if [ ! -d /mnt/source/ ]; then
-  # Control will enter here if $DIRECTORY doesn't exist.
+echo “Installing CIFS-UTILS”
+
+echo “Making New Source Directory”
 mkdir /mnt/source/
-fi
 
 echo “Mounting CIDSE-FS-01”
+mount.cifs //cidse-fs-01.cidse.dhcp.asu.edu/Source /mnt/source -o vers=3.0,username=deploy,domain=cidse-fs-01,password=hiywabk2DAY!
 
-
+################################################################################################
 ################################################################################################
 #################################   Check for Drivers     ######################################
 ################################################################################################
@@ -37,35 +37,121 @@ mkdir /usr/share/cups/model/Dell_PPD/
 fi
 
 ################################################################################################
-############################ Copy Dell_B5460 Driver to client  #################################
+############################ Copy Dell_B5460 Driver to client     ##############################
 ################################################################################################
 
-cp /mnt/source/linux/ubuntu/config/cidse/scripts/printers/PPDS/Dell_PPD/Dell_B5460dn_Laser_Printer.ppd /usr/share/cups/model/Dell_PPD/
+cp /mnt/source/linux/ubuntu/config/cidse/workstation/printers/PPDS/Dell_PPD/Dell_B5465dnf_Laser_MFP.ppd /usr/share/cups/model/Dell_PPD/
 
 ################################################################################################
-############################        Configure BYENG_5W      ###################################
+#############################   Copy Print Filter to Client       ##############################
+################################################################################################
+
+cp /mnt/source/linux/ubuntu/config/cidse/workstation/printers/PPDS/Dell_PPD/fax-pnh-filter /usr/lib/cups/filter
+
+################################################################################################
+################################################################################################
+############################        Map Common Printers     ####################################
+################################################################################################
+################################################################################################
+
+################################################################################################
+############################       Configure BYENG_M1-40     ###################################
+################################################################################################
+
+echo "Installing BYENG_M1-40"
+lpadmin -p BYENG_M1-40 -v socket://10.218.104.31:9100/BYENG_M1-40 -P '/usr/share/cups/model/Dell_PPD/Dell_B5465dnf_Laser_MFP.ppd'
+
+
+echo "Setting Configuration Options"
+cupsenable BYENG_M1-40
+cupsaccept BYENG_M1-40
+
+echo "BYENG_M1-40 Printer Configuration Complete"
+
+
+
+################################################################################################
+############################       Configure BYENG_312     ###################################
+################################################################################################
+
+echo "Installing BYENG_312"
+lpadmin -p BYENG_312 -v socket://10.218.104.32:9100/BYENG_312 -P '/usr/share/cups/model/Dell_PPD/Dell_B5460dn_Laser_Printer.ppd'
+
+
+echo "Setting Configuration Options"
+cupsenable BYENG_312
+cupsaccept BYENG_312
+
+echo "BYENG_312 Printer Configuration Complete"
+
+################################################################################################
+############################       Configure BYENG_4SW       ###################################
+################################################################################################
+
+echo "Installing BYENG_4SW"
+lpadmin -p BYENG_4SW -v socket://10.218.104.33:9100/BYENG_4SW -P '/usr/share/cups/model/Dell_PPD/Dell_B5460dn_Laser_Printer.ppd'
+
+
+echo "Setting Configuration Options"
+cupsenable BYENG_4SW
+cupsaccept BYENG_4SW
+
+echo "BYENG_4SW Printer Configuration Complete"
+
+################################################################################################
+############################       Configure BYENG_4N       ###################################
+################################################################################################
+
+echo "Installing BYENG_4N"
+lpadmin -p BYENG_4N -v socket://10.218.104.34:9100/BYENG_4N -P '/usr/share/cups/model/Dell_PPD/Dell_B5460dn_Laser_Printer.ppd'
+
+
+echo "Setting Configuration Options"
+cupsenable BYENG_4N
+cupsaccept BYENG_4N
+
+echo "BYENG_4N Printer Configuration Complete"
+
+################################################################################################
+############################       Configure BYENG_4SE       ###################################
+################################################################################################
+
+echo "Installing BYENG_4SE"
+lpadmin -p BYENG_4SE -v socket://10.218.104.35:9100/BYENG_4SE -P '/usr/share/cups/model/Dell_PPD/Dell_B5460dn_Laser_Printer.ppd'
+
+
+echo "Setting Configuration Options"
+cupsenable BYENG_4SE
+cupsaccept BYENG_4SE
+
+echo "BYENG_4SE Printer Configuration Complete"
+
+
+################################################################################################
+############################       Configure BYENG_5W       ###################################
 ################################################################################################
 
 echo "Installing BYENG_5W"
-lpadmin -p BYENG_5W -v socket://10.218.104.36 -P '/usr/share/cups/model/Dell_PPD/Dell_B5460dn_Laser_Printer.ppd'
- 
+lpadmin -p BYENG_5W -v socket://10.218.104.36:9100/BYENG_5W -P '/usr/share/cups/model/Dell_PPD/Dell_B5460dn_Laser_Printer.ppd'
+
+echo "Setting Configuration Options"
 cupsenable BYENG_5W
 cupsaccept BYENG_5W
-echo "BYENG_5W Configuration Complete"
+
+echo "BYENG_5W Printer Configuration Complete"
 
 ################################################################################################
-############################        Configure BYENG_5E      ###################################
+############################       Configure BYENG_5E       ###################################
 ################################################################################################
 
 echo "Installing BYENG_5E"
-lpadmin -p BYENG_5E -v socket://10.218.104.37 -P '/usr/share/cups/model/Dell_PPD/Dell_B5460dn_Laser_Printer.ppd'
+lpadmin -p BYENG_5E -v socket://10.218.104.37:9100/BYENG_5E -P '/usr/share/cups/model/Dell_PPD/Dell_B5460dn_Laser_Printer.ppd'
 
-cupsenable BYENG_5E 
+echo "Setting Configuration Options"
+cupsenable BYENG_5E
 cupsaccept BYENG_5E
-echo "BYENG_5E Configuration Complete"
 
-
-echo “CIDSE IT: 5th Floor Printer Setup and Configuration COMPLETE!
+echo "BYENG_5E Printer Configuration Complete"
 
 
 
