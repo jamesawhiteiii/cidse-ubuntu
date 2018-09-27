@@ -104,6 +104,12 @@ apt-get install openssh-server -y
 echo $(date) ${filename} SUCCESS: Open SSH Server installed >> /var/log/fse.log
 
 #####################################################################
+# Install curl                                                      #
+#####################################################################
+apt-get install curl -y
+echo $(date) ${filename} SUCCESS: curl installed >> /var/log/fse.log
+
+#####################################################################
 # Install pbis-open                                                 #
 #####################################################################
 
