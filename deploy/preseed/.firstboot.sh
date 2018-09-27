@@ -35,7 +35,7 @@ ver_chk=$(cat /etc/lsb-release | grep RELEASE | grep 18.04)
 #####################################################################
 
 # Add a pause to allow network connection to come alive
-sleep 10
+sleep 20
 
 # Now test the network
 if [[ "$(ping -c 1 8.8.8.8 | grep '100% packet loss' )" != "" ]]; then
