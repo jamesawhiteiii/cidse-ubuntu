@@ -207,6 +207,7 @@ fi
 #####################################################################
 # POST to Jenkins API for Ansible Inital Provisioning               #
 #####################################################################
+#
 clear
 echo "Making API call to Jenkins server to provision host for Ansible"
 curl -u auto:11a3ad6cabf17e731d9ae1c02f32a23376 "http://en4061283l.cidse.dhcp.asu.edu:8080/job/Provision_Ansible_Service_Account/buildWithParameters?token=PEb9RAY2wjrtlrGrHckTEsf4ZxW4mXsx&new_cidsehost=${newhost}.cidse.dhcp.asu.edu"
