@@ -4,9 +4,20 @@ This repository contains the various files involved in creating an automatic Ubu
 FSE environment. Copying the respective files in this repository to their prescribed locations on an Ubuntu installation
 USB or ISO will allow you to create an automatic installation. 
 
+
+#### Getting around this repository
+
+Each top level folder houses different scripts or other resources, below is a helpful guide to know where to look
+
+- deploy/ -- Base OS installation automation (Preseed, grub.cfg, firstboot.sh)
+- provisioning/ -- Ubuntu basic configuration (firstboot_live and firstlogin_live scripts, backgrounds)
+- scripts/ -- Utilities for FSE IT staff to run
+- software/ -- Software for FSE IT staff to install
+
 ## Getting Started
 
 The easiest way to get started is using these files is by placing them on an already created Ubuntu installation USB drive.
+It is recommended you create your USB drive with Rufus or a similar utility that leaves R/W access to the drive when complete.
 Modifying and recreating an ISO is a more involved process and covered in a different document.
 
 ### Prerequisites
@@ -39,11 +50,11 @@ first hard drive of any existing data. Before you launch a preseeded boot option
 
 At a high level the process is:
 
-1. Boot machine, load the menu options from grub.cfg
-2. Install OS based on selected option and respective preseed file
-3. Restart after install completes
-4. Run firstboot.sh silently
-5. Autologin and run firstlogin.sh interactively
+| Step          | Description                                     | Key Action                       |
+| ------------- | ----------------------------------------------- | -------------------------------- |
+| Boot from USB | Display FSE Preseed options via custom grub.cfg | Automated OS install             |
+| First bootup  | Run .firstboot.sh, run firstboot_live.sh        | Wget firstboot_live.sh and firstlogin_live.sh   |
+| First login   | Run .firstlogin_live.sh                         | Final provisioning steps         |
 
 
 Should you encounter errors during the process, always check the logs first at /var/log/fse.log.
@@ -56,50 +67,53 @@ will launch again.
 ## Files and Brief Descriptions
 
 
-#### fse.seed and fse-nvme.seed
+Files, their descriptions and purpose are listed below in the order they occur during the process. All parts of the process write logs to /var/log/fse.log.
+
+
+#### /deploy/preseed/fse-*.seed files
 
 These are the preseed files themselves. They represent the answers to the questions usually presented by the GUI
 installer. Things such as partitioning, user creation, third-party packages, and timezone are all set in the preseed
-file. These two files contain all the same answers however one targets the first SATA device, and one targets the first NVMe
-device. Upon completion the preseed sets up log files at /var/log/fse.log.
+file. Upon completion the preseed sets up log files at /var/log/fse.log.
 
-#### firstboot.sh
 
+#### /deploy/preseed/.firstboot.sh
 This script is set to run after the installation restarts the computer. It runs noninteractively before login.
 It will place logs in /var/log/fse.log. Its purpose is currently to: 
+- Check for internet connectivity
+- WGET and run the firstboot_live.sh
 
-- Verify network connectivity before proceeding (will exit without it)
-- Patch avahi (prevents error message on login)
-- Copy the local admin (techs) user profile
-- Copy the Landscape client files
-- Setup the PBIS repository (PBIS is for binding to Active Directory)
-- Perform an apt-get update and apt-get upgrade
-- Install openssh-server, landscape-client, pbis-open
-- Setup lightdm to autologin to the techs account
-- Set up the firstlogin.sh script
-- Change the background to the pitchfork
-- Restart lightdm which will then autologin
-- Remove itself if the above steps succeed
+#### /provisioning/firstboot_live.sh
 
-#### firstlogin.sh
+This script runs after it downloaded by firstboot.sh. It runs noninteractively before login. Its purpose is currently to: 
 
-This script will run interactively on every login until it is removed. Successful completion of all its steps
-will lead to the script removing itself. Its purpose is currently to:
+- Setup techs autologin
+- Install and prepare the Landscape client
+- Install openssh-server
+- Set the FSE pitchfork/provisioning background
+- WGET and setup autologin for firstlogin_live.sh
+- Reload the GUI to initiate the autologin
+- Remove itself and its the firstboot.sh autostart in /etc/rc.local
 
-- Verify network connectivity before proceeding (will exit without it)
-- Prompt for techs sudo password
-- Prompt for machine hostname
-- Prompt for Fulton credentials to bind to Active Directory
-- Attempt to join the Landscape server
-- Remove itself and disable autologin if the above steps succeed
+#### /provisioning/firstlogin_live.sh
 
+This script will run interactively on every login until it is removed. Its purpose is currently to:
 
-#### install Folder
+- Set the FSE pitchfork/provisioning background for 18.04+
+- Ask user for the hostname
+- Register to Landscape
+- Disable autologin and configure login screen
+- Remove firstlogin_live.sh
+- Reload GUI to complete the process
 
-Contains various resources for the installation process:
+## Other Files of Note
 
-- Pitchfork background
-- Landscape client files
-- Lightdm.conf (for techs autologin)
-- Techs profile/home directory
-- firstlogin.sh script file
+Other key files that aren't directly involved in the provisioning process and their purpose.
+
+#### /deploy/preseed/install/fse/fse_env
+
+This file contains the text string of the Git branch you want to pull files from. This would allow you to change a USB drive to pull files from either a dev or testing branch versus the live 'master' production branch. All the scripts listed above will look to this file to make a decision on where to wget live files from.
+
+## Troubleshooting
+
+If you encounter a missing initrd.lz or vmzlinuz.efi. In the casper directory on your USB create copies of the vmzlinuz and initrd files. Rename the copies as initrd.lz and vmzlinuz.efi respectively.
