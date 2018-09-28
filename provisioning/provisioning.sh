@@ -372,7 +372,7 @@ chown root:root /usr/share/images/grub/grub.tga
 ###Get Grub file
 cd /etc/default/
 mv /etc/default/grub /etc/default/grub.bak
-wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub
+wget https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/grub.cfg
 #mv /etc/default/grub.cfg /etc/default/grub
 update-grub
 
