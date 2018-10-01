@@ -166,6 +166,6 @@ fi
 # Remove this script and the autostart for it                       #
 #####################################################################
 #
-rm /etc/rc.local
-rm /tmp/firstboot_live.sh
+#rm /etc/rc.local
+#rm /tmp/firstboot_live.sh
 echo $(date) ${filename} SUCCESS: ${filename} finished, removed and disabled from autostart  >> /var/log/fse.log
