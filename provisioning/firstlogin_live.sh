@@ -53,6 +53,11 @@ then
 fi
 
 #####################################################################
+# Double check packages are installed                               #
+#####################################################################
+apt-get install openssh-server curl pbis-open landscape-client -y
+
+#####################################################################
 # Display a banner                                                  #
 #####################################################################
 clear
@@ -139,8 +144,20 @@ echo "Please enter your Fulton AD Domain Credentials in order to bind this compu
 echo "     This is your AD account (example: jwhite40ad)                               "
 domainjoin-cli join fulton.ad.asu.edu 
 
-#Send to log file
-echo $(date) ${filename} SUCCESS: $(hostname) successfully joined to fulton.ad.asu.edu >> /var/log/fse.log
+# Error checking here using $? builtin variable to track last exit code
+if [ $? -eq 0 ]
+then
+	#Send to log file
+	echo $(date) ${filename} SUCCESS: $(hostname) successfully joined to fulton.ad.asu.edu >> /var/log/fse.log
+else
+	echo $(date) ${filename} FAILURE: $(hostname) unable to join to fulton.ad.asu.edu >> /var/log/fse.log
+	clear
+	echo " ####################### FAILED TO JOIN DOMAIN ########################## "
+	echo " ##### THIS SCRIPT WILL CLOSE IN 20 SECONDS, RE-LOGIN TO RESTART IT ##### "
+	sleep 20
+	exit
+fi
+
 clear
 ##########################################################################################
 ##########################################################################################
@@ -173,11 +190,19 @@ echo "**************************************************************************
 echo “Beginning Landscape Configuration”
 landscape-config --computer-title $(hostname -f) --script-users nobody,landscape,root --silent
 
-#Send to log file
-echo $(date) ${filename} SUCCESS: FSE Landscape Registration Complete >> /var/log/fse.log
-
-
-
+# Error checking here using $? builtin variable to track last exit code
+if [ $? -eq 0 ]
+then
+	#Send to log file
+	echo $(date) ${filename} SUCCESS: FSE Landscape Registration Complete >> /var/log/fse.log
+else
+	echo $(date) ${filename} FAILURE: FSE Landscape regsitration failed >> /var/log/fse.log
+	clear
+	echo " ###################### FAILED TO JOIN LANDSCAPE ######################## "
+	echo " ##### THIS SCRIPT WILL CLOSE IN 20 SECONDS, RE-LOGIN TO RESTART IT ##### "
+	sleep 20
+	exit
+fi
 
 #####################################################################
 # Disable autologin & configure login screen                        #
