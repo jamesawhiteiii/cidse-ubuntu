@@ -73,10 +73,6 @@ else
 		chmod 644 /etc/lightdm/lightdm.conf
 		echo $(date) ${filename} SUCCESS: 16.04 login configured >> /var/log/fse.log
 fi
-#####################################################################
-# Run Updates                                                       #
-#####################################################################
-sudo apt-get update
 
 #####################################################################
 # Install and prepare Landscape client                              #
@@ -119,7 +115,6 @@ echo $(date) ${filename} SUCCESS: curl installed >> /var/log/fse.log
 
 wget -O - http://repo.pbis.beyondtrust.com/apt/RPM-GPG-KEY-pbis | sudo apt-key add - 
 sudo wget -O /etc/apt/sources.list.d/pbiso.list http://repo.pbis.beyondtrust.com/apt/pbiso.list 
-
 sudo apt-get update
 echo $(date) ${filename} SUCCESS: PBIS-OPEN Repo Added >> /var/log/fse.log
 
@@ -133,8 +128,7 @@ echo $(date) ${filename} SUCCESS: PBIS-OPEN Installed >> /var/log/fse.log
 echo $(date) ${filename} Beginning WGET of firstlogin_live.sh >> /var/log/fse.log
 
 # Get lastest firstlogin_live script from repo and execute
-#wget -O /tmp/firstlogin_live.sh https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/${fse_env}/provisioning/firstlogin_live.sh
-wget -O /tmp/firstlogin_live.sh https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/firstlogin_live.sh
+wget -O /tmp/firstlogin_live.sh https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/${fse_env}/provisioning/firstlogin_live.sh
 chmod u+x /tmp/firstlogin_live.sh
 
 # Create the autostart directory if it doesn't exists
@@ -166,6 +160,6 @@ fi
 # Remove this script and the autostart for it                       #
 #####################################################################
 #
-#rm /etc/rc.local
-#rm /tmp/firstboot_live.sh
+rm /etc/rc.local
+rm /tmp/firstboot_live.sh
 echo $(date) ${filename} SUCCESS: ${filename} finished, removed and disabled from autostart  >> /var/log/fse.log
