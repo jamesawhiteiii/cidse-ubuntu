@@ -143,6 +143,14 @@ cp -a /install/fse/autologin/provisioning.desktop /home/techs/.config/autostart/
 echo $(date) ${filename} SUCCESS: firstlogin_live.sh autostart setup via /home/techs/.config/autostart/provisioning.desktop >> /var/log/fse.log
 
 #####################################################################
+# Remove this script and the autostart for it                       #
+#####################################################################
+#
+rm /etc/rc.local
+rm /tmp/firstboot_live.sh
+echo $(date) ${filename} SUCCESS: ${filename} finished, removed and disabled from autostart  >> /var/log/fse.log
+
+#####################################################################
 # Restart GUI to proceed to auto login and continue                 #
 #####################################################################
 
@@ -156,10 +164,4 @@ else
 		service lightdm restart
 fi
 
-#####################################################################
-# Remove this script and the autostart for it                       #
-#####################################################################
-#
-rm /etc/rc.local
-rm /tmp/firstboot_live.sh
-echo $(date) ${filename} SUCCESS: ${filename} finished, removed and disabled from autostart  >> /var/log/fse.log
+
