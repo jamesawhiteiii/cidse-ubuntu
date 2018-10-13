@@ -252,8 +252,8 @@ sed -i 's_exit 0_sh /root/.firstboot.sh_' /target/etc/rc.local; \
 #	Profiles (home/techs/.config)
 #	Scripts
 cp -a /cdrom/preseed/install /target/; \
-cp /target/install/fse/rc.local.sh /target/etc/rc.local.sh
-chmod +x /etc/rc.local.sh; \
+cp /target/install/fse/rc.local /target/etc/rc.local
+chmod +x /etc/rc.local; \
 
  
 ################################################################################

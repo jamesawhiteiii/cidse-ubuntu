@@ -58,6 +58,6 @@ fi
 echo $(date) ${filename} Beginning WGET of firstboot_live.sh >> /var/log/fse.log
 
 # Get lastest firstlogin_live script from repo and execute
-wget -O /tmp/firstboot_live.sh https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/master/provisioning/firstboot_live.sh
+wget -O /tmp/firstboot_live.sh https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/${fse_env}/provisioning/firstboot_live.sh
 chmod +x /tmp/firstboot_live.sh
 bash /tmp/firstboot_live.sh --verbose
