@@ -137,6 +137,7 @@ chmod u+x /tmp/firstlogin_live.sh
 # Create the autostart directory if it doesn't exists
 mkdir /home/techs/.config/
 mkdir /home/techs/.config/autostart
+mkdir /home/techs/.config/nautilus
 
 
 # Copy FSE version with firstlogin.sh autostart
