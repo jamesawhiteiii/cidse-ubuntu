@@ -127,6 +127,9 @@ echo $(date) ${filename} SUCCESS: PBIS-OPEN Installed >> /var/log/fse.log
 #Send to log file
 echo $(date) ${filename} Beginning WGET of firstlogin_live.sh >> /var/log/fse.log
 
+# Backup the original file (if it exists)
+mv /home/techs/.config/autostart/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop.bak
+
 # Get lastest firstlogin_live script from repo and execute
 wget -O /tmp/firstlogin_live.sh https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/${fse_env}/provisioning/firstlogin_live.sh
 chmod u+x /tmp/firstlogin_live.sh
@@ -135,8 +138,6 @@ chmod u+x /tmp/firstlogin_live.sh
 mkdir /home/techs/.config/
 mkdir /home/techs/.config/autostart
 
-# Backup the original file (if it exists)
-mv /home/techs/.config/autostart/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop.bak
 
 # Copy FSE version with firstlogin.sh autostart
 cp -a /install/fse/autologin/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop
