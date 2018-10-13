@@ -132,6 +132,7 @@ wget -O /tmp/firstlogin_live.sh https://raw.githubusercontent.com/jamesawhiteiii
 chmod u+x /tmp/firstlogin_live.sh
 
 # Create the autostart directory if it doesn't exists
+mkdir /home/techs/.config/
 mkdir /home/techs/.config/autostart
 
 # Backup the original file (if it exists)
