@@ -127,20 +127,31 @@ echo $(date) ${filename} SUCCESS: PBIS-OPEN Installed >> /var/log/fse.log
 #Send to log file
 echo $(date) ${filename} Beginning WGET of firstlogin_live.sh >> /var/log/fse.log
 
+# Backup the original file (if it exists)
+mv /home/techs/.config/autostart/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop.bak
+
 # Get lastest firstlogin_live script from repo and execute
 wget -O /tmp/firstlogin_live.sh https://raw.githubusercontent.com/jamesawhiteiii/cidse-ubuntu/${fse_env}/provisioning/firstlogin_live.sh
 chmod u+x /tmp/firstlogin_live.sh
 
 # Create the autostart directory if it doesn't exists
+mkdir /home/techs/.config/
 mkdir /home/techs/.config/autostart
+mkdir /home/techs/.config/nautilus
 
-# Backup the original file (if it exists)
-mv /home/techs/.config/autostart/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop.bak
 
 # Copy FSE version with firstlogin.sh autostart
 cp -a /install/fse/autologin/provisioning.desktop /home/techs/.config/autostart/provisioning.desktop
 
 echo $(date) ${filename} SUCCESS: firstlogin_live.sh autostart setup via /home/techs/.config/autostart/provisioning.desktop >> /var/log/fse.log
+
+#####################################################################
+# Remove this script and the autostart for it                       #
+#####################################################################
+#
+rm /etc/rc.local
+rm /tmp/firstboot_live.sh
+echo $(date) ${filename} SUCCESS: ${filename} finished, removed and disabled from autostart  >> /var/log/fse.log
 
 #####################################################################
 # Restart GUI to proceed to auto login and continue                 #
@@ -156,10 +167,4 @@ else
 		service lightdm restart
 fi
 
-#####################################################################
-# Remove this script and the autostart for it                       #
-#####################################################################
-#
-rm /etc/rc.local
-rm /tmp/firstboot_live.sh
-echo $(date) ${filename} SUCCESS: ${filename} finished, removed and disabled from autostart  >> /var/log/fse.log
+

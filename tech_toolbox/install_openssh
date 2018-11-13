@@ -1,0 +1,9 @@
+#!/bin/bash
+ 
+#########################################################################
+#################     Install Open SSH Server          ##################
+#########################################################################
+
+apt-get install openssh-server -y
+
+echo $(date) ${filename} SUCCESS: Open SSH Server installed >> /var/log/fse.log
