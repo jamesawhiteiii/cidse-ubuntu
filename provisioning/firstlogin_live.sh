@@ -100,7 +100,13 @@ echo " *************************************************************************
 ### Write out to log
 echo $(date) ${filename} SUCCESS: Hostname is $newhost >>/var/log/fse.log
 
+
+systemctl restart networking
+
+sleep3
+
 clear
+
 #####################################################################
 # Join to AD                                                        #
 #####################################################################
@@ -166,6 +172,7 @@ clear
 /opt/pbis/bin/config UserDomainPrefix ASUAD
 /opt/pbis/bin/config AssumeDefaultDomain true 
 /opt/pbis/bin/config LoginShellTemplate /bin/bash 
+
 ##########################################################################################
 ##########################################################################################
 #############################         Add CIDSE IT to SUDO             ###################
